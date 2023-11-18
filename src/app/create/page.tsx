@@ -17,7 +17,7 @@ function Page() {
 
   const setFocus = (index: number, focus: boolean) => {
     const newFocusFields = focusFields.map((_, i) =>
-      i === index ? focus : false
+      i === index ? true : false
     );
 
     setFocusFields(newFocusFields);
@@ -36,6 +36,8 @@ function Page() {
               field={field}
               index={index}
               setFocus={setFocus}
+              focusFields={focusFields}
+                setFocusFields={setFocusFields}
             />
           </div>
 

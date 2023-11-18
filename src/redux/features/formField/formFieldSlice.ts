@@ -51,6 +51,23 @@ export const FormFieldSlice = createSlice({
       newFormFields[index].label = newLabel;
     },
 
+    deleteFormField: (state, action: PayloadAction<{ index: number }>) => {
+      const { index } = action.payload;
+      const newFormFields = [...state.formFields];
+      newFormFields.splice(index, 1);
+      state.formFields = newFormFields;
+    },
+
+    copyFormField: (state, action: PayloadAction<{ index: number }>) => {
+      const { index } = action.payload;
+      console.log("index", index)
+      const newFormFields = [...state.formFields];
+      const copiedFormField = { ...newFormFields[index], id: nanoid() };
+      console.log("copiedFormField", copiedFormField);
+      newFormFields.splice(index + 1, 0, copiedFormField);
+      state.formFields = newFormFields;
+    },
+
     handleDescriptionChange: (
       state,
       action: PayloadAction<{ index: number; newDescription: string }>
@@ -218,6 +235,8 @@ export const {
   handleValidationChange,
   handleFileValidationChange,
   handleTimeChange,
+  deleteFormField,
+  copyFormField,
 } = FormFieldSlice.actions;
 
 export default FormFieldSlice.reducer;

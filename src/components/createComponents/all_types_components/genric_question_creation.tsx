@@ -21,6 +21,8 @@ import Time from "../all_answer_types/time";
 import { PiDotsSixBold } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import {
+  copyFormField,
+  deleteFormField,
   handleDescriptionChange,
   handleRequiredChange,
   handleTimeChange,
@@ -42,6 +44,8 @@ interface Props {
   field: FormField;
   index: number;
   setFocus: (index: number, focus: boolean) => void;
+  focusFields: boolean[];
+  setFocusFields: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 
 const Genric_Question_Creation: React.FC<Props> = ({
@@ -49,6 +53,8 @@ const Genric_Question_Creation: React.FC<Props> = ({
   field,
   index,
   setFocus,
+  focusFields,
+  setFocusFields,
 }) => {
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(field.type);
@@ -167,6 +173,28 @@ const Genric_Question_Creation: React.FC<Props> = ({
     }
   };
 
+  const handleCopyFormField = () => {
+    dispatch(copyFormField({ index }));
+    const focusedIndex = focusFields.findIndex((f) => f);
+    console.log(focusedIndex);
+    const newFocusFields = [
+      ...focusFields.slice(0, focusedIndex),
+      false,
+      true,
+      ...focusFields.slice(focusedIndex + 1),
+    ];
+    console.log(newFocusFields);
+    setFocusFields(newFocusFields);
+  };
+
+  const handleDeleteFormField = () => {
+    dispatch(deleteFormField({ index }));
+    focusFields[index - 1] = true;
+    const newFocusFields = focusFields.splice(index, 1);
+    setFocusFields(newFocusFields);
+    console.log(focusFields);
+  };
+
   return field.type === "Title and description" ? (
     <div
       className="bg-white container max-w-3xl rounded-xl border-t-8 border-t-red-200"
@@ -186,6 +214,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
           focus={false}
           type="text"
           index={index}
+          label={field.label}
         />
         <QuestionInput
           input_label="Description"
@@ -194,6 +223,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
           focus={false}
           type="description"
           index={index}
+          label={field.description}
         />
       </div>
     </div>
@@ -226,6 +256,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
               focus={focus}
               type="text"
               index={index}
+              label={field.label}
             />
           </div>
 
@@ -256,6 +287,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
             focus={focus}
             type="description"
             index={index}
+            label={field.description}
           />
         )}
         {/* dynamic : question answer  */}
@@ -266,10 +298,16 @@ const Genric_Question_Creation: React.FC<Props> = ({
             <div className="border-b py-4"></div>
             <div className="flex justify-end items-center space-x-3">
               <div className="hidden md:flex justify-end items-center space-x-3">
-                <div className="text-gray-500">
+                <div
+                  className="text-gray-500 cursor-pointer"
+                  onClick={handleCopyFormField}
+                >
                   <FaRegCopy size={20} />
                 </div>
-                <div className="text-gray-500">
+                <div
+                  className="text-gray-500 cursor-pointer"
+                  onClick={handleDeleteFormField}
+                >
                   <MdDelete size={20} />
                 </div>
               </div>
@@ -309,11 +347,17 @@ const Genric_Question_Creation: React.FC<Props> = ({
                   >
                     {/* duplicate and delete button  */}
                     <div className="flex md:hidden flex-col">
-                      <div className=" flex space-x-2 justify-start items-center hover:bg-gray-100 p-2 cursor-pointer">
+                      <div
+                        className=" flex space-x-2 justify-start items-center hover:bg-gray-100 p-2 cursor-pointer"
+                        onClick={handleCopyFormField}
+                      >
                         <FaRegCopy size={20} />
                         <p>Duplicate Item</p>
                       </div>
-                      <div className=" flex space-x-2 justify-start items-center hover:bg-gray-100 p-2 cursor-pointer">
+                      <div
+                        className=" flex space-x-2 justify-start items-center hover:bg-gray-100 p-2 cursor-pointer"
+                        onClick={handleDeleteFormField}
+                      >
                         <MdDelete size={20} />
                         <p>Delete Item</p>
                       </div>

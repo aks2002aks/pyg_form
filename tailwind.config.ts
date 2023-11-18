@@ -19,6 +19,7 @@ const config: Config = {
       xs: "475px",
       ...defaultTheme.screens,
     },
+    
   },
   plugins: [],
 };

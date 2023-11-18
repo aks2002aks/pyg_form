@@ -15,6 +15,7 @@ interface Props {
   focus: boolean;
   type: string;
   index: number;
+  label: string | undefined;
 }
 
 const QuestionInput: React.FC<Props> = ({
@@ -24,9 +25,10 @@ const QuestionInput: React.FC<Props> = ({
   focus,
   type,
   index,
+  label,
 }) => {
   const dispatch = useDispatch();
-  const [text, setText] = useState("");
+  const [text, setText] = useState(label);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
 
