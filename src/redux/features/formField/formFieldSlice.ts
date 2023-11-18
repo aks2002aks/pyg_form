@@ -5,6 +5,7 @@ interface AllFormField {
     type: string;
     id: string;
     label: string;
+    focus: boolean;
     options?: string[];
     isOther?: boolean;
     otherText?: string;
@@ -25,6 +26,7 @@ const initialState: AllFormField = {
       id: nanoid(),
       label: "Untitled form",
       required: false,
+      focus: false,
     },
     {
       type: "Multiple choice",
@@ -32,6 +34,7 @@ const initialState: AllFormField = {
       label: "",
       options: ["Option 1", "Option 2"],
       required: false,
+      focus: true,
     },
   ],
   userId: "yourUserId",
@@ -42,6 +45,57 @@ export const FormFieldSlice = createSlice({
   name: "AllFormField",
   initialState,
   reducers: {
+    setFocus: (state, action: PayloadAction<{ index: number }>) => {
+      const { index } = action.payload;
+      const newFormFields = state.formFields.map((field, i) => {
+        if (i === index) {
+          return { ...field, focus: true };
+        } else {
+          return { ...field, focus: false };
+        }
+      });
+      state.formFields = newFormFields;
+    },
+
+    deleteFormField: (state, action: PayloadAction<{}>) => {
+      const focusedIndex = state.formFields.findIndex(
+        (field) => field.focus === true
+      );
+
+      if (focusedIndex !== -1) {
+        const newFormFields = [...state.formFields];
+
+        // Update focus for the previous field if it exists
+        if (focusedIndex > 0) {
+          newFormFields[focusedIndex - 1].focus = true;
+        } else if (newFormFields.length > 0) {
+          newFormFields[0].focus = true;
+        }
+
+        // Create a new array without the deleted field
+        const updatedFormFields = newFormFields.filter(
+          (_, index) => index !== focusedIndex
+        );
+          console.log(updatedFormFields)
+        // Update the state with the new array
+        state.formFields = updatedFormFields;
+      }
+    },
+
+    copyFormField: (state, action: PayloadAction<{}>) => {
+      const focusedIndex = state.formFields.findIndex(
+        (field) => field.focus === true
+      );
+      const copiedFormField = {
+        ...state.formFields[focusedIndex],
+        id: nanoid(),
+        focus: true,
+      };
+
+      state.formFields[focusedIndex].focus = false;
+      state.formFields.splice(focusedIndex + 1, 0, copiedFormField);
+    },
+
     handleLabelChange: (
       state,
       action: PayloadAction<{ index: number; newLabel: string }>
@@ -49,23 +103,6 @@ export const FormFieldSlice = createSlice({
       const { index, newLabel } = action.payload;
       const newFormFields = [...state.formFields];
       newFormFields[index].label = newLabel;
-    },
-
-    deleteFormField: (state, action: PayloadAction<{ index: number }>) => {
-      const { index } = action.payload;
-      const newFormFields = [...state.formFields];
-      newFormFields.splice(index, 1);
-      state.formFields = newFormFields;
-    },
-
-    copyFormField: (state, action: PayloadAction<{ index: number }>) => {
-      const { index } = action.payload;
-      console.log("index", index)
-      const newFormFields = [...state.formFields];
-      const copiedFormField = { ...newFormFields[index], id: nanoid() };
-      console.log("copiedFormField", copiedFormField);
-      newFormFields.splice(index + 1, 0, copiedFormField);
-      state.formFields = newFormFields;
     },
 
     handleDescriptionChange: (
@@ -183,19 +220,15 @@ export const FormFieldSlice = createSlice({
         otherText?: string;
         required: boolean;
         validation?: any;
-        focusedIndex: number;
+        focus: boolean;
       }>
     ) => {
-      const {
-        type,
-        label,
-        options,
-        otherText,
-        required,
-        validation,
-        focusedIndex,
-      } = action.payload;
+      const { type, label, options, otherText, required, validation, focus } =
+        action.payload;
 
+      const focusedIndex = state.formFields.findIndex(
+        (field) => field.focus === true
+      );
       // Ensure a focus field is found
       if (focusedIndex !== -1) {
         // Create a new form field
@@ -207,17 +240,14 @@ export const FormFieldSlice = createSlice({
           otherText,
           required,
           validation,
+          focus,
         };
 
-        // Insert the new form field at the focused index + 1
-        const newFormFields = [
-          ...state.formFields.slice(0, focusedIndex + 1),
-          newFormField,
-          ...state.formFields.slice(focusedIndex + 1),
-        ];
+        // Set the previous focused field to false
+        state.formFields[focusedIndex].focus = false;
 
-        // Update state with the new form fields
-        state.formFields = newFormFields;
+        // Insert the new form field after the focused index
+        state.formFields.splice(focusedIndex + 1, 0, newFormField);
       }
     },
   },
@@ -237,6 +267,7 @@ export const {
   handleTimeChange,
   deleteFormField,
   copyFormField,
+  setFocus,
 } = FormFieldSlice.actions;
 
 export default FormFieldSlice.reducer;

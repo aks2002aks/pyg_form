@@ -4,11 +4,10 @@ import { addNewQuestionField } from "@/redux/features/formField/formFieldSlice";
 import { useDispatch } from "react-redux";
 
 interface Props {
-  focusFields: boolean[];
-  setFocusFields: React.Dispatch<React.SetStateAction<boolean[]>>;
+ 
 }
 
-const AddComponent: React.FC<Props> = ({ focusFields, setFocusFields }) => {
+const AddComponent: React.FC<Props> = ({}) => {
   const dispatch = useDispatch();
 
   return (
@@ -16,24 +15,15 @@ const AddComponent: React.FC<Props> = ({ focusFields, setFocusFields }) => {
       <div
         className="text-center hover:bg-slate-100 p-1 rounded-lg"
         onClick={() => {
-          const focusedIndex = focusFields.findIndex((f) => f);
           dispatch(
             addNewQuestionField({
               type: "Multiple choice",
               label: "",
               options: ["Option 1", "Option 2"],
-              focusedIndex: focusedIndex,
               required: false,
+              focus: true,
             })
           );
-          const newFocusFields = [
-            ...focusFields.slice(0, focusedIndex),
-            false,
-            true,
-            ...focusFields.slice(focusedIndex + 1),
-          ];
-
-          setFocusFields(newFocusFields);
         }}
       >
         <IoMdAddCircleOutline size={20} />

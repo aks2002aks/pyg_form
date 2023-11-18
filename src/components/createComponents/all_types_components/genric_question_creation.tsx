@@ -26,36 +26,30 @@ import {
   handleDescriptionChange,
   handleRequiredChange,
   handleTimeChange,
+  setFocus,
 } from "@/redux/features/formField/formFieldSlice";
 
 interface FormField {
   type: string;
   id: string;
   label: string;
+  focus: boolean;
   options?: string[];
-  other?: string;
+  isOther?: boolean;
+  otherText?: string;
   description?: string;
-  required?: boolean;
+  required: boolean;
   validation?: any;
+  fileValidation?: any;
+  isTime?: boolean;
 }
 
 interface Props {
-  focus: boolean;
   field: FormField;
   index: number;
-  setFocus: (index: number, focus: boolean) => void;
-  focusFields: boolean[];
-  setFocusFields: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 
-const Genric_Question_Creation: React.FC<Props> = ({
-  focus,
-  field,
-  index,
-  setFocus,
-  focusFields,
-  setFocusFields,
-}) => {
+const Genric_Question_Creation: React.FC<Props> = ({ field, index }) => {
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(field.type);
   const [options, setOptions] = useState<string[]>(["Option 1", "Option 2"]);
@@ -110,7 +104,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
         <Multiple_choice
           options={options}
           setOptions={setOptions}
-          focus={focus}
+          focus={field.focus}
           index={index}
         />
       );
@@ -119,7 +113,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
         <DropDown
           options={options}
           setOptions={setOptions}
-          focus={focus}
+          focus={field.focus}
           index={index}
         />
       );
@@ -128,7 +122,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
         <Checkboxes
           options={options}
           setOptions={setOptions}
-          focus={focus}
+          focus={field.focus}
           index={index}
         />
       );
@@ -173,38 +167,18 @@ const Genric_Question_Creation: React.FC<Props> = ({
     }
   };
 
-  const handleCopyFormField = () => {
-    dispatch(copyFormField({ index }));
-    const focusedIndex = focusFields.findIndex((f) => f);
-    console.log(focusedIndex);
-    const newFocusFields = [
-      ...focusFields.slice(0, focusedIndex),
-      false,
-      true,
-      ...focusFields.slice(focusedIndex + 1),
-    ];
-    console.log(newFocusFields);
-    setFocusFields(newFocusFields);
-  };
-
-  const handleDeleteFormField = () => {
-    dispatch(deleteFormField({ index }));
-    focusFields[index - 1] = true;
-    const newFocusFields = focusFields.splice(index, 1);
-    setFocusFields(newFocusFields);
-    console.log(focusFields);
-  };
-
   return field.type === "Title and description" ? (
     <div
       className="bg-white container max-w-3xl rounded-xl border-t-8 border-t-red-200"
       onClick={() => {
-        setFocus(index, true);
+        if (!field.focus) {
+          dispatch(setFocus({ index }));
+        }
       }}
     >
       <div
         className={`p-5 w-full border-l-[6px] rounded-lg space-y-4 ${
-          focus ? "border-l-blue-300" : ""
+          field.focus ? "border-l-blue-300" : ""
         }`}
       >
         <QuestionInput
@@ -231,12 +205,14 @@ const Genric_Question_Creation: React.FC<Props> = ({
     <div
       className="relative bg-white container max-w-3xl rounded-xl"
       onClick={() => {
-        setFocus(index, true);
+        if (!field.focus) {
+          dispatch(setFocus({ index }));
+        }
       }}
     >
       <div
         className={`p-5 w-full border-l-[6px] rounded-lg space-y-4 ${
-          focus ? "border-l-blue-300" : ""
+          field.focus ? "border-l-blue-300" : ""
         }`}
       >
         <div className="flex sm:flex-row flex-col space-x-4 sm:items-center items-start space-y-4">
@@ -253,7 +229,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
                   : " Question here ...."
               }
               text_size="18"
-              focus={focus}
+              focus={field.focus}
               type="text"
               index={index}
               label={field.label}
@@ -262,7 +238,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
 
           {/* fixed : part question type and add image button */}
           <div className="flex sm:w-1/3 w-full space-x-4  items-center">
-            {focus && (
+            {field.focus && (
               <>
                 <div className="flex sm:h-10 h-14 items-center">
                   <FaRegImages size={20} />
@@ -284,7 +260,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
             input_label="Description"
             placeholder_text="Description"
             text_size="15"
-            focus={focus}
+            focus={field.focus}
             type="description"
             index={index}
             label={field.description}
@@ -293,20 +269,22 @@ const Genric_Question_Creation: React.FC<Props> = ({
         {/* dynamic : question answer  */}
         {rendorAnswerType(selectedValue)}
         {showValidation && rendorValidationType(selectedValue)}
-        {focus && (
+        {field.focus && (
           <>
             <div className="border-b py-4"></div>
             <div className="flex justify-end items-center space-x-3">
               <div className="hidden md:flex justify-end items-center space-x-3">
                 <div
                   className="text-gray-500 cursor-pointer"
-                  onClick={handleCopyFormField}
+                  onClick={() => dispatch(copyFormField({}))}
                 >
                   <FaRegCopy size={20} />
                 </div>
                 <div
                   className="text-gray-500 cursor-pointer"
-                  onClick={handleDeleteFormField}
+                  onClick={() => {
+                    dispatch(deleteFormField({}));
+                  }}
                 >
                   <MdDelete size={20} />
                 </div>
@@ -349,14 +327,14 @@ const Genric_Question_Creation: React.FC<Props> = ({
                     <div className="flex md:hidden flex-col">
                       <div
                         className=" flex space-x-2 justify-start items-center hover:bg-gray-100 p-2 cursor-pointer"
-                        onClick={handleCopyFormField}
+                        onClick={() => dispatch(copyFormField({}))}
                       >
                         <FaRegCopy size={20} />
                         <p>Duplicate Item</p>
                       </div>
                       <div
                         className=" flex space-x-2 justify-start items-center hover:bg-gray-100 p-2 cursor-pointer"
-                        onClick={handleDeleteFormField}
+                        onClick={() => dispatch(deleteFormField({}))}
                       >
                         <MdDelete size={20} />
                         <p>Delete Item</p>
