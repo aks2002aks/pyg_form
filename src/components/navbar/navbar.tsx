@@ -29,10 +29,12 @@ const Navbar = () => {
             data-dropdown-placement="bottom"
           >
             <span className="sr-only">Open user menu</span>
-            <img
+            <Image
               className="w-8 h-8 rounded-full"
-              src="/docs/images/people/profile-picture-3.jpg"
+              src="/user.png"
               alt="user photo"
+              height={32}
+              width={32}
             />
           </button>
 
@@ -98,9 +100,9 @@ const Navbar = () => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>
