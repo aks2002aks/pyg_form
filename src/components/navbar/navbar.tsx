@@ -1,10 +1,36 @@
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 const Navbar = () => {
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <nav className="bg-white border-gray-200 ">
+    <nav className="bg-white border-gray-200 border-b">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           href="/"
@@ -19,70 +45,52 @@ const Navbar = () => {
           />
           <span className="ml-1 text-xl">PYG Form</span>
         </Link>
-        <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <div className="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <button
             type="button"
             className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 "
-            id="user-menu-button"
-            aria-expanded="false"
-            data-dropdown-toggle="user-dropdown"
-            data-dropdown-placement="bottom"
+            onClick={toggleUserDropdown}
           >
             <span className="sr-only">Open user menu</span>
-            <Image
-              className="w-8 h-8 rounded-full"
-              src="/user.png"
-              alt="user photo"
-              height={32}
-              width={32}
-            />
+            <Link href={"/"}>
+              <Image
+                className="w-8 h-8 rounded-full"
+                src="/user.png"
+                alt="user photo"
+                height={32}
+                width={32}
+              />
+            </Link>
           </button>
 
-          <div
-            className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow "
-            id="user-dropdown"
-          >
-            <div className="px-4 py-3">
-              <span className="block text-sm text-gray-900 ">Bonnie Green</span>
-              <span className="block text-sm  text-gray-500 truncate ">
-                name@flowbite.com
-              </span>
+          {isUserDropdownOpen && (
+            <div
+              className="absolute right-0 top-6 z-50  my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow border"
+              ref={dropdownRef}
+            >
+              <div className="px-4 py-3">
+                <span className="block text-sm text-gray-900 ">
+                  Bonnie Green
+                </span>
+                <span className="block text-sm  text-gray-500 truncate ">
+                  name@flowbite.com
+                </span>
+              </div>
+              <ul className="py-2" aria-labelledby="user-menu-button">
+                <Link href={"/forms"}>
+                  <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                    My Forms
+                  </p>
+                </Link>
+
+                <Link href={"/"}>
+                  <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                    Sign out
+                  </p>
+                </Link>
+              </ul>
             </div>
-            <ul className="py-2" aria-labelledby="user-menu-button">
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
-                >
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
-                >
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
-                >
-                  Earnings
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
-                >
-                  Sign out
-                </a>
-              </li>
-            </ul>
-          </div>
+          )}
           <button
             data-collapse-toggle="navbar-user"
             type="button"
@@ -112,49 +120,7 @@ const Navbar = () => {
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
           id="navbar-user"
         >
-          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white ">
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 "
-                aria-current="page"
-              >
-                Home
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
-              >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
-              >
-                Services
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
-              >
-                Pricing
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
-              >
-                Contact
-              </a>
-            </li>
-          </ul>
+          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white "></ul>
         </div>
       </div>
     </nav>
