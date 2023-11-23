@@ -14,6 +14,10 @@ interface AllFormField {
     validation?: any;
     fileValidation?: any;
     isTime?: boolean;
+    answer?: string;
+    selectedAnswer?: string[];
+    fromRange?: string;
+    toRange?: string;
   }[];
   userId?: string;
   user?: string;
@@ -37,8 +41,8 @@ const initialState: AllFormField = {
       focus: true,
     },
   ],
-  userId: "yourUserId",
-  user: "yourUsername",
+  userId: "12345678",
+  user: "Ashwani",
 };
 
 export const FormFieldSlice = createSlice({
@@ -76,7 +80,7 @@ export const FormFieldSlice = createSlice({
         const updatedFormFields = newFormFields.filter(
           (_, index) => index !== focusedIndex
         );
-          console.log(updatedFormFields)
+        console.log(updatedFormFields);
         // Update the state with the new array
         state.formFields = updatedFormFields;
       }
@@ -250,6 +254,31 @@ export const FormFieldSlice = createSlice({
         state.formFields.splice(focusedIndex + 1, 0, newFormField);
       }
     },
+    handleDropField: (
+      state,
+      action: PayloadAction<{ source: number; destination: number }>
+    ) => {
+      const { source, destination } = action.payload;
+
+      if (source > 0 && destination > 0) {
+        const updatedFields = state.formFields.slice();
+
+        // Swap the positions of the dragged field and the target field
+        [updatedFields[destination], updatedFields[source]] = [
+          updatedFields[source],
+          updatedFields[destination],
+        ];
+
+        state.formFields = updatedFields;
+      }
+    },
+
+    setAllFormFields: (state, action: PayloadAction<AllFormField>) => {
+      const { formFields, userId, user } = action.payload;
+      state.formFields = formFields;
+      state.userId = userId;
+      state.user = user;
+    },
   },
 });
 
@@ -268,6 +297,8 @@ export const {
   deleteFormField,
   copyFormField,
   setFocus,
+  handleDropField,
+  setAllFormFields,
 } = FormFieldSlice.actions;
 
 export default FormFieldSlice.reducer;

@@ -47,9 +47,16 @@ interface FormField {
 interface Props {
   field: FormField;
   index: number;
+  handleDragStart: () => void;
+  handleDragEnd: () => void;
 }
 
-const Genric_Question_Creation: React.FC<Props> = ({ field, index }) => {
+const Genric_Question_Creation: React.FC<Props> = ({
+  field,
+  index,
+  handleDragStart,
+  handleDragEnd,
+}) => {
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(field.type);
   const [options, setOptions] = useState<string[]>(["Option 1", "Option 2"]);
@@ -215,10 +222,15 @@ const Genric_Question_Creation: React.FC<Props> = ({ field, index }) => {
           field.focus ? "border-l-blue-300" : ""
         }`}
       >
-        <div className="flex sm:flex-row flex-col space-x-4 sm:items-center items-start space-y-4">
-          <div className="absolute top-0 flex left-[50%] hover:cursor-move focus:cursor-move ">
+        <div
+            className="flex h-10 justify-center hover:cursor-grab focus:cursor-grabbing "
+            onMouseDown={handleDragStart}
+            onMouseUp={handleDragEnd}
+          >
             <PiDotsSixBold size={28} />
           </div>
+        <div className="flex sm:flex-row flex-col space-x-4 sm:items-center items-start space-y-4">
+          
           {/* fixed : question  */}
           <div className="sm:w-2/3 w-full">
             <QuestionInput

@@ -53,6 +53,7 @@ const DropDown: React.FC<Props> = ({ options, setOptions, focus, index }) => {
               className={`hover:border-b outline-none w-full focus:border-b-2 ${
                 isDuplicate ? "border-red-500" : ""
               }`}
+              autoFocus={focus}
             />
             <div
               onMouseEnter={() => setIsHovered(true)}

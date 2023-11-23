@@ -100,6 +100,7 @@ const QuestionInput: React.FC<Props> = ({
         placeholder={placeholder_text}
         onChange={handleInputChange}
         value={text}
+        autoFocus={focus}
         onClick={() => setShowButtons(true)}
         style={{ fontSize: `${text_size}px` }}
       />
