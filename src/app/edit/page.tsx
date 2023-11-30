@@ -2,169 +2,117 @@
 
 "use client";
 
-import AddComponent from "@/components/createComponents/all_types_components/add_component";
-import Genric_Question_Creation from "@/components/createComponents/all_types_components/genric_question_creation";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from "react-beautiful-dnd";
-import { handleDropField, setAllFormFields } from "@/redux/features/formField/formFieldSlice";
-import Link from "next/link";
-import { FiArrowLeft } from "react-icons/fi";
-import { useSearchParams } from "next/navigation";
+import React, { useState } from "react";
+import { IoSettings } from "react-icons/io5";
+import { BsClipboardCheckFill } from "react-icons/bs";
+import { FaFileCircleQuestion } from "react-icons/fa6";
+import CreateForm from "@/components/formComponents/CreateForm";
 
-
-const myformData = {
-  _id: "5fc5bf01f25eeea23c5fe6d6",
-  formFields: [
-    {
-      type: "Title and description",
-      id: "some-unique-id-4",
-      label: "My Second Form",
-      required: false,
-      focus: false,
-    },
-    {
-      type: "Paragraph",
-      id: "some-unique-id-5",
-      label: "Share your thoughts on the following topic",
-      required: true,
-      focus: true,
-    },
-    {
-      type: "Checkboxes",
-      id: "some-unique-id-6",
-      label: "Select your hobbies",
-      options: ["Reading", "Traveling", "Sports"],
-      required: false,
-      focus: false,
-    },
-    {
-      type: "File upload",
-      id: "some-unique-id-9",
-      label: "Upload your resume",
-      required: true,
-      focus: false,
-    },
-    {
-      type: "Time",
-      id: "some-unique-id-10",
-      label: "Select your preferred time",
-      required: false,
-      focus: false,
-    },
-  ],
-  userId: "12345678",
-  user: "Ashwani",
-};
-
-function Page() {
-  const dispatch = useDispatch();
-  const allformFields = useSelector((state: RootState) => state);
-  const formFields = useSelector((state: RootState) => state.formFields);
-  const [isBrowser, setIsBrowser] = useState(false);
-  const formid = useSearchParams().get("formid");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsBrowser(true);
-    }
-    if (isBrowser) {
-      // Dispatch the setAllFormFields action with your initial data
-      dispatch(setAllFormFields(myformData));
-    }
-  }, [dispatch, isBrowser]);
-
-  useEffect(() => {
-    console.log(allformFields);
-  }, [allformFields]);
-
-  const handleDragAndDrop = (result: DropResult) => {
-    const { source, destination, type } = result;
-    if (!destination) return;
-    if (type === "group") {
-      dispatch(
-        handleDropField({
-          source: source.index,
-          destination: destination.index,
-        })
-      );
-      console.log(type, source, destination);
-    }
-    console.log(result);
-  };
-
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleDragStart = () => {
-    setIsDragging(true);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-  };
-
+const Page = () => {
+  const [showQuestions, setShowQuestions] = useState(true);
+  const [showResponse, setShowResponse] = useState(false);
+  const [showSetting, setShowSetting] = useState(false);
   return (
-    <main className="bg-gray-100 flex flex-col space-y-4 justify-center items-center p-4 md:p-12 pb-20">
-      <DragDropContext onDragEnd={handleDragAndDrop}>
-        {isBrowser ? (
-          <Droppable droppableId="ROOT" type="group">
-            {(provided) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                className="w-full flex flex-col space-y-4 justify-center items-center"
-              >
-                
-                {formFields.map((field, index) => (
-                  <Draggable
-                    draggableId={field.id}
-                    index={index}
-                    key={field.id}
-                    isDragDisabled={isDragging}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        className="relative flex w-full justify-center items-center max-w-4xl"
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        {snapshot.isDragging ? null : (
-                          <>
-                            <div className="flex w-full justify-center">
-                              <Genric_Question_Creation
-                                field={field}
-                                index={index}
-                                handleDragStart={handleDragStart}
-                                handleDragEnd={handleDragEnd}
-                              />
-                            </div>
+    <>
+      <div className="flex justify-center  border-b">
+        <div className="flex overflow-x-auto whitespace-nowrap">
+          <button
+            className={`inline-flex items-center h-12 px-2 py-2 text-center text-gray-700 bg-transparent border-gray-300 sm:px-4  -px-1  whitespace-nowrap focus:outline-none hover:border-b-2  hover:border-red-600 ${
+              showQuestions ? "border-red-600 border-b-2" : ""
+            }`}
+            onClick={() => {
+              setShowQuestions(true);
+              setShowResponse(false);
+              setShowSetting(false);
+            }}
+          >
+            <FaFileCircleQuestion size={15} />
 
-                            {field.focus && (
-                              <div className="absolute right-0">
-                                <AddComponent />
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        ) : null}
-      </DragDropContext>
-    </main>
+            <span className="mx-1 text-sm sm:text-base">Questions</span>
+          </button>
+
+          <button
+            className={`inline-flex items-center h-12 px-2 py-2 text-center text-gray-700 bg-transparent border-gray-300 sm:px-4 -px-1  whitespace-nowrap  focus:outline-none  hover:border-b-2  hover:border-red-600 ${
+              showResponse ? "border-red-600 border-b-2" : ""
+            }`}
+            onClick={() => {
+              setShowQuestions(false);
+              setShowResponse(true);
+              setShowSetting(false);
+            }}
+          >
+            <BsClipboardCheckFill size={15} />
+
+            <span className="mx-1 text-sm sm:text-base">Responses</span>
+          </button>
+
+          <button
+            className={`inline-flex items-center h-12 px-2 py-2 text-center text-gray-700 bg-transparent border-gray-300 sm:px-4  -px-1  whitespace-nowrap focus:outline-none hover:border-b-2  hover:border-red-600 ${
+              showSetting ? "border-red-600 border-b-2" : ""
+            }`}
+            onClick={() => {
+              setShowQuestions(false);
+              setShowResponse(false);
+              setShowSetting(true);
+            }}
+          >
+            <IoSettings size={15} />
+
+            <span className="mx-1 text-sm sm:text-base">Setting</span>
+          </button>
+        </div>
+      </div>
+      {showQuestions && (
+        <CreateForm
+          myformData={{
+            _id: "5fc5bf01f25eeea23c5fe6d6",
+            formFields: [
+              {
+                type: "Title and description",
+                id: "some-unique-id-4",
+                label: "My Second Form",
+                required: false,
+                focus: false,
+              },
+              {
+                type: "Paragraph",
+                id: "some-unique-id-5",
+                label: "Share your thoughts on the following topic",
+                required: true,
+                focus: true,
+              },
+              {
+                type: "Checkboxes",
+                id: "some-unique-id-6",
+                label: "Select your hobbies",
+                options: ["Reading", "Traveling", "Sports"],
+                required: false,
+                focus: false,
+              },
+              {
+                type: "File upload",
+                id: "some-unique-id-9",
+                label: "Upload your resume",
+                required: true,
+                focus: false,
+              },
+              {
+                type: "Time",
+                id: "some-unique-id-10",
+                label: "Select your preferred time",
+                required: false,
+                focus: false,
+              },
+            ],
+            userId: "12345678",
+            user: "Ashwani",
+          }}
+        />
+      )}
+      {showResponse && <div>Response</div>}
+      {showSetting && <div>Setting</div>}
+    </>
   );
-}
+};
 
 export default Page;

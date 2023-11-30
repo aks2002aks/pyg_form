@@ -5,6 +5,7 @@ import Image from "next/image";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const forms = [
   {
@@ -122,15 +123,15 @@ const Page = () => {
           </div>
           <div className="flex flex-wrap pb-8">
             <div className=" flex  flex-col ">
-              <Image
-                src="/redPlus.jpg"
-                height={150}
-                width={150}
-                alt="red plus sign"
-                className="rounded-md  border hover:border-red-400 cursor-pointer"
-                onClick={() => router.push("/create")}
-              />
-
+              <Link href={"/create"}>
+                <Image
+                  src="/redPlus.jpg"
+                  height={150}
+                  width={150}
+                  alt="red plus sign"
+                  className="rounded-md  border hover:border-red-400 cursor-pointer"
+                />
+              </Link>
               <div className="p-2 text-sm">Blank Form</div>
             </div>
           </div>
@@ -143,10 +144,10 @@ const Page = () => {
         </div>
         <div className="flex flex-wrap -m-4 cursor-pointer ">
           {forms.map((form) => (
-            <div
+            <Link
               className="p-4 max-w-xs "
               key={form._id}
-              onClick={() => router.push(`/edit?formid=${form._id}`)}
+              href={`/edit?formid=${form._id}`}
             >
               <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden  hover:border-red-500">
                 <img
@@ -171,7 +172,7 @@ const Page = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

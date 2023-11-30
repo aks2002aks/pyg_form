@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/redux/store/storeProvider";
-
+import NextTopLoader from "nextjs-toploader";
 import Navbar from "@/components/navbar/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,6 +21,7 @@ export default function RootLayout({
     <StoreProvider>
       <html lang="en">
         <body className={inter.className}>
+          <NextTopLoader />
           <Navbar />
           {children}
         </body>

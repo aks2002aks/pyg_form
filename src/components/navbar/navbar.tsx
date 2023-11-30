@@ -52,15 +52,14 @@ const Navbar = () => {
             onClick={toggleUserDropdown}
           >
             <span className="sr-only">Open user menu</span>
-            <Link href={"/"}>
-              <Image
-                className="w-8 h-8 rounded-full"
-                src="/user.png"
-                alt="user photo"
-                height={32}
-                width={32}
-              />
-            </Link>
+
+            <Image
+              className="w-8 h-8 rounded-full"
+              src="/user.png"
+              alt="user photo"
+              height={32}
+              width={32}
+            />
           </button>
 
           {isUserDropdownOpen && (

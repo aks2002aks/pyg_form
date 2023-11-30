@@ -159,6 +159,7 @@ export const FormFieldSlice = createSlice({
       const newFormFields = [...state.formFields];
       newFormFields[index] = { ...newFormFields[index] };
       newFormFields[index].options = [...newOption];
+      state.formFields = newFormFields;
     },
 
     handleOtherChange: (
