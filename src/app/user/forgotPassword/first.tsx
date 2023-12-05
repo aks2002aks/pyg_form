@@ -31,7 +31,6 @@ const First = ({ handleInput }: FirstProps) => {
   const isValidPhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^\+\d{2}\d{10}$/;
     return phoneRegex.test(phoneNumber);
-    return phoneRegex.test(phoneNumber);
   };
 
   const isValidEmail = (email: string) => {
@@ -81,7 +80,6 @@ const First = ({ handleInput }: FirstProps) => {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  
                   <input
                     id="input"
                     type={inputType === "phone" ? "tel" : "email"}
@@ -91,7 +89,7 @@ const First = ({ handleInput }: FirstProps) => {
                     }
                     required
                   />
-                  
+
                   <div className="text-red-500 text-sm font-medium text-center h-[10px]">
                     <p>{errorMessage}</p>
                   </div>

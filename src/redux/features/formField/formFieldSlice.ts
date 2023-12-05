@@ -14,13 +14,17 @@ interface AllFormField {
     validation?: any;
     fileValidation?: any;
     isTime?: boolean;
+    time?: string;
     answer?: string;
     selectedAnswer?: string[];
     fromRange?: string;
     toRange?: string;
   }[];
-  userId?: string;
-  user?: string;
+  userId: string;
+  user: string;
+  _id?: string;
+  formName: string;
+  isPublic: boolean;
 }
 
 const initialState: AllFormField = {
@@ -43,6 +47,8 @@ const initialState: AllFormField = {
   ],
   userId: "12345678",
   user: "Ashwani",
+  formName: "Untitled form",
+  isPublic: false,
 };
 
 export const FormFieldSlice = createSlice({
@@ -59,6 +65,10 @@ export const FormFieldSlice = createSlice({
         }
       });
       state.formFields = newFormFields;
+    },
+
+    setFormName: (state, action: PayloadAction<string>) => {
+      state.formName = action.payload;
     },
 
     deleteFormField: (state, action: PayloadAction<{}>) => {
@@ -275,10 +285,13 @@ export const FormFieldSlice = createSlice({
     },
 
     setAllFormFields: (state, action: PayloadAction<AllFormField>) => {
-      const { formFields, userId, user } = action.payload;
+      const { formFields, userId, user, formName, isPublic } = action.payload;
       state.formFields = formFields;
       state.userId = userId;
       state.user = user;
+      state.formName = formName;
+      state.isPublic = isPublic;
+      return state;
     },
   },
 });
@@ -300,6 +313,7 @@ export const {
   setFocus,
   handleDropField,
   setAllFormFields,
+  setFormName,
 } = FormFieldSlice.actions;
 
 export default FormFieldSlice.reducer;

@@ -1,17 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
+  const router = useRouter();
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-
+  const [loggedIn, setLoggedIn] = useState(false);
+  const { data: session, status } = useSession();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
+
+  const logout = async () => {
+    setIsUserDropdownOpen(false);
+    signOut();
+    router.push("/");
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setLoggedIn(true);
+    }
+  }, [status]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -43,7 +59,7 @@ const Navbar = () => {
             height={60}
             className=""
           />
-          <span className="ml-1 text-xl">PYG Form</span>
+          <span className="ml-1 text-xl font-extrabold">PYG FORMS</span>
         </Link>
         <div className="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <button
@@ -67,53 +83,62 @@ const Navbar = () => {
               className="absolute right-0 top-6 z-50  my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow border"
               ref={dropdownRef}
             >
-              <div className="px-4 py-3">
-                <span className="block text-sm text-gray-900 ">
-                  Bonnie Green
-                </span>
-                <span className="block text-sm  text-gray-500 truncate ">
-                  name@flowbite.com
-                </span>
-              </div>
+              {loggedIn && (
+                <div className="px-4 py-3">
+                  <span className="block text-sm text-gray-900 ">
+                    {session?.user?.firstName}
+                  </span>
+                  <span className="block text-sm  text-gray-500 truncate ">
+                    {session?.user?.email}
+                  </span>
+                </div>
+              )}
               <ul className="py-2" aria-labelledby="user-menu-button">
-                <Link href={"/forms"}>
-                  <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
-                    My Forms
-                  </p>
-                </Link>
+                {loggedIn && (
+                  <>
+                    <Link
+                      href={"/forms"}
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                      }}
+                    >
+                      <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                        My Forms
+                      </p>
+                    </Link>
+                    <Link
+                      href={"/profile"}
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                      }}
+                    >
+                      <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                        Profile
+                      </p>
+                    </Link>
+                    <div onClick={logout}>
+                      <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                        Sign out
+                      </p>
+                    </div>
+                  </>
+                )}
 
-                <Link href={"/"}>
-                  <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
-                    Sign out
-                  </p>
-                </Link>
+                {!loggedIn && (
+                  <Link
+                    href={"/user/login"}
+                    onClick={() => {
+                      setIsUserDropdownOpen(false);
+                    }}
+                  >
+                    <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                      Login
+                    </p>
+                  </Link>
+                )}
               </ul>
             </div>
           )}
-          <button
-            data-collapse-toggle="navbar-user"
-            type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
-            aria-controls="navbar-user"
-            aria-expanded="false"
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
         </div>
         <div
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
