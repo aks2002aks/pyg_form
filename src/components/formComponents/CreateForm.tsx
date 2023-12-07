@@ -28,7 +28,7 @@ import ShareModal from "../modal/shareModal";
 const CreateForm = () => {
   const dispatch = useDispatch();
   const formFields = useSelector((state: RootState) => state.formFields);
-  const allFormFields = useSelector((state: RootState) => state);
+  const formName = useSelector((state: RootState) => state.formName);
   const [isBrowser, setIsBrowser] = useState(false);
   const [openShare, setOpenShare] = useState(false);
   const formid = useSearchParams().get("formid");
@@ -110,7 +110,7 @@ const CreateForm = () => {
           },
           body: JSON.stringify({
             userId: session?.user?.id,
-            formName: allFormFields.formName,
+            formName: formName,
             formId: formid,
           }),
         }
@@ -152,7 +152,7 @@ const CreateForm = () => {
     //   console.error("Error publishing question form:", error);
     // }
     setLoading(false);
-    setOpenShare(true)
+    setOpenShare(true);
   };
 
   return (
@@ -168,7 +168,7 @@ const CreateForm = () => {
           <input
             type="text"
             className="focus:border-b focus:border-black focus:outline-none  w-full  py-1 text-xl  mr-4 ml-2"
-            value={allFormFields.formName}
+            value={formName}
             onChange={handleFormNameChange}
             onBlur={handleFormNameBlur}
           />

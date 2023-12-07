@@ -7,6 +7,7 @@ import {
   handleDescriptionChange,
   handleLabelChange,
 } from "@/redux/features/formField/formFieldSlice";
+import Editor from "../editorToolbar/Editor";
 
 interface Props {
   input_label: string;
@@ -86,8 +87,11 @@ const QuestionInput: React.FC<Props> = ({
   }, [parentRef]);
 
   return (
-    <div className="flex flex-col items-start space-y-2" ref={parentRef}>
-      <textarea
+    <div
+    // className="flex flex-col items-start space-y-2"
+    //  ref={parentRef}
+    >
+      {/* <textarea
         ref={textAreaRef}
         id={input_label}
         name={input_label}
@@ -136,7 +140,8 @@ const QuestionInput: React.FC<Props> = ({
             />
           </div>
         </motion.div>
-      )}
+      )} */}
+      <Editor />
     </div>
   );
 };
