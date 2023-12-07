@@ -142,11 +142,11 @@ const Page = () => {
           <div className="py-4">
             <h1>Recent Forms</h1>
           </div>
-          <div className="flex flex-wrap -m-4 cursor-pointer ">
+          <div className="flex flex-wrap -m-4  ">
             {forms &&
               forms.map((form) => (
                 <Link
-                  className="p-4 max-w-xs "
+                  className="p-4 max-w-xs cursor-pointer"
                   key={form._id}
                   href={`/edit?formid=${form._id}`}
                 >
