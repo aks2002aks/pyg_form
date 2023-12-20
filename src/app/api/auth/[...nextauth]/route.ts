@@ -36,14 +36,17 @@ const authOptions: NextAuthOptions = {
           };
         }
 
-        const response = await fetch("http://localhost:4000/api/login", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(credentialDetails),
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(credentialDetails),
+          }
+        );
 
         const { success, user, message } = await response.json();
         if (success) {
@@ -56,12 +59,12 @@ const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/user/login",
-  }, 
+  },
   session: {
     strategy: "jwt",
     maxAge: 24 * 60 * 60,
   },
-  jwt:{
+  jwt: {
     maxAge: 24 * 60 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
