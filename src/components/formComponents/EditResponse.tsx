@@ -54,7 +54,7 @@ const EditResponse = () => {
 
   const acceptingResponseTill = useSelector(
     (state: RootState) => state.formField.acceptingResponsesTill
-  ) as Date;
+  ) as string;
 
   const response = useSelector((state: RootState) => state.formResponse);
 
