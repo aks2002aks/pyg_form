@@ -28,7 +28,7 @@ const Hero = () => {
 
   return (
     <div className="max-w-screen-xl mt-6 px-8 xl:px-16 mx-auto" id="about">
-      <div className="grid grid-flow-row md:grid-flow-col grid-rows-2 md:grid-rows-1 md:grid-cols-2 gap-8 py-6 md:py-16">
+      <div className="grid grid-flow-row md:grid-flow-col grid-rows-0 md:grid-rows-1 md:grid-cols-2 gap-8 py-6 md:py-16">
         <div className=" flex flex-col justify-center items-start row-start-2 md:row-start-1">
           <h1 className="text-3xl lg:text-4xl xl:text-5xl font-medium text-black-600 leading-normal">
             <strong>PYG Forms:</strong> Where Intelligence Meets Every Response!
@@ -47,13 +47,14 @@ const Hero = () => {
           </Link>
         </div>
         <div className="flex w-full">
-          <div className="h-full w-full">
+          <div className=" w-full">
             <Image
               src={"form_home.svg"}
               alt="image"
               quality={100}
               width={612}
               height={383}
+              loading="lazy"
             />
           </div>
         </div>

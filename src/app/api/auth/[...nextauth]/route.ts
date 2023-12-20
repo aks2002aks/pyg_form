@@ -56,12 +56,15 @@ const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/user/login",
-  },
+  }, 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24, // 1 days
+    maxAge: 24 * 60 * 60,
   },
-  secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
+  jwt:{
+    maxAge: 24 * 60 * 60,
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     jwt: async ({ token, user }: { token: any; user: any }) => {
       if (user) {

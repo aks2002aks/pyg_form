@@ -17,7 +17,7 @@ const Footer = () => {
             className="h-10 w-auto mb-6"
           />
           <p className="mb-4">
-            <strong className="font-medium">LaslesVPN</strong> is a AI form
+            <strong className="font-semibold">PYG Forms</strong> is a AI form
             Genrating platform that helps you to create your own form with ease.
           </p>
           <div className="flex w-full mt-2 mb-8 -mx-2">

@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Children,
-  SetStateAction,
-} from "react";
+import React, { useState, useEffect, useRef, SetStateAction } from "react";
 
 import { MdOutlineShortText } from "react-icons/md";
 import { GrTextAlignFull } from "react-icons/gr";
@@ -19,6 +13,7 @@ import { MdOutlineAccessTime } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { handleTypeChange } from "@/redux/features/formField/formFieldSlice";
+import { PiSlidersHorizontal } from "react-icons/pi";
 
 interface Props {
   selectedValue: string;
@@ -87,6 +82,9 @@ const Question_type: React.FC<Props> = ({
             {selectedValue === "Checkboxes" && (
               <CiSquareCheck className="mr-2" />
             )}
+            {selectedValue === "Range" && (
+              <PiSlidersHorizontal className="mr-2" />
+            )}
             {selectedValue === "File upload" && (
               <BiSolidCloudUpload className="mr-2" />
             )}
@@ -95,7 +93,7 @@ const Question_type: React.FC<Props> = ({
               <MdOutlineAccessTime className="mr-2" />
             )}
 
-            <span>{selectedValue || "Select a vehicle"}</span>
+            <span>{selectedValue || "Select a option"}</span>
           </div>
           <div className="flex-shrink-0 pr-2">
             <svg
@@ -160,6 +158,13 @@ const Question_type: React.FC<Props> = ({
               >
                 <CiSquareCheck className="mr-2" />
                 <span>Checkboxes</span>
+              </li>
+              <li
+                className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleOptionClick("Range")}
+              >
+                <PiSlidersHorizontal className="mr-2" />
+                <span>Range</span>
               </li>
               <li
                 className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-100"

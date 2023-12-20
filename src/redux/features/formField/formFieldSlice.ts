@@ -1,5 +1,20 @@
 import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
 
+interface FormSettings {
+  response: {
+    collectEmailAddresses: string;
+    limitToOneResponsePerPerson: boolean;
+    allowResponseEditing: boolean;
+  };
+  presentation: {
+    showLinkToSubmitAnotherResponse: boolean;
+    confirmationMessage: string;
+  };
+  defaults: {
+    makeAllQuestionsRequire: boolean;
+  };
+}
+
 interface AllFormField {
   formFields: {
     type: string;
@@ -8,23 +23,31 @@ interface AllFormField {
     focus: boolean;
     options?: string[];
     isOther?: boolean;
-    otherText?: string;
     description?: string;
+    minValue?: number;
+    maxValue?: number;
+    step?: number;
     required: boolean;
     validation?: any;
     fileValidation?: any;
     isTime?: boolean;
-    time?: string;
-    answer?: string;
-    selectedAnswer?: string[];
-    fromRange?: string;
-    toRange?: string;
+    imageUrlKey?: string;
+    imageSettings?: {
+      width: number;
+      height: number;
+      align: string;
+    };
   }[];
   userId: string;
   user: string;
   _id?: string;
   formName: string;
   isPublic: boolean;
+  updatedAt?: Date;
+  formSettings: FormSettings;
+  acceptingResponses: boolean;
+  acceptingResponsesTill?: string;
+  accessByRole?: string[];
 }
 
 const initialState: AllFormField = {
@@ -39,7 +62,7 @@ const initialState: AllFormField = {
     {
       type: "Multiple choice",
       id: nanoid(),
-      label: "",
+      label: "<p>Question</p>",
       options: ["Option 1", "Option 2"],
       required: false,
       focus: true,
@@ -49,12 +72,69 @@ const initialState: AllFormField = {
   user: "Ashwani",
   formName: "Untitled form",
   isPublic: false,
+  acceptingResponses: true,
+  formSettings: {
+    response: {
+      collectEmailAddresses: "do not collect",
+      limitToOneResponsePerPerson: false,
+      allowResponseEditing: false,
+    },
+    presentation: {
+      showLinkToSubmitAnotherResponse: false,
+      confirmationMessage: "",
+    },
+    defaults: {
+      makeAllQuestionsRequire: false,
+    },
+  },
 };
 
 export const FormFieldSlice = createSlice({
   name: "AllFormField",
   initialState,
   reducers: {
+    setImageSettings: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        imageSettings: { width: number; height: number; align: string };
+      }>
+    ) => {
+      const { index, imageSettings } = action.payload;
+      const newFormFields = state.formFields.map((field, i) => {
+        if (i === index) {
+          return { ...field, imageSettings };
+        } else {
+          return field;
+        }
+      });
+      state.formFields = newFormFields;
+    },
+
+    setMinValue: (
+      state,
+      action: PayloadAction<{ index: number; minValue: number }>
+    ) => {
+      const { index, minValue } = action.payload;
+      state.formFields[index].minValue = minValue;
+    },
+
+    setMaxValue: (
+      state,
+      action: PayloadAction<{ index: number; maxValue: number }>
+    ) => {
+      const { index, maxValue } = action.payload;
+      state.formFields[index].maxValue = maxValue;
+    },
+
+    setStep: (
+      state,
+      action: PayloadAction<{ index: number; step: number }>
+    ) => {
+      const { index, step } = action.payload;
+      state.formFields[index].step = step;
+    },
+
     setFocus: (state, action: PayloadAction<{ index: number }>) => {
       const { index } = action.payload;
       const newFormFields = state.formFields.map((field, i) => {
@@ -65,6 +145,14 @@ export const FormFieldSlice = createSlice({
         }
       });
       state.formFields = newFormFields;
+    },
+
+    setImageUrlKey: (
+      state,
+      action: PayloadAction<{ index: number; imageKey: string }>
+    ) => {
+      const { index, imageKey } = action.payload;
+      state.formFields[index].imageUrlKey = imageKey;
     },
 
     setFormName: (state, action: PayloadAction<string>) => {
@@ -181,15 +269,7 @@ export const FormFieldSlice = createSlice({
       newFormFields[index].isOther = newIsOther;
       state.formFields = newFormFields;
     },
-    handleOtherTextChange: (
-      state,
-      action: PayloadAction<{ index: number; newOtherText: string }>
-    ) => {
-      const { index, newOtherText } = action.payload;
-      const newFormFields = [...state.formFields];
-      newFormFields[index].otherText = newOtherText;
-      state.formFields = newFormFields;
-    },
+
     handleRequiredChange: (
       state,
       action: PayloadAction<{ index: number; newRequired: boolean }>
@@ -205,7 +285,11 @@ export const FormFieldSlice = createSlice({
     ) => {
       const { index, newValidation } = action.payload;
       const newFormFields = [...state.formFields];
-      newFormFields[index].validation = newValidation;
+      if (newValidation === null) {
+        delete newFormFields[index].validation;
+      } else {
+        newFormFields[index].validation = newValidation;
+      }
     },
 
     handleFileValidationChange: (
@@ -265,6 +349,41 @@ export const FormFieldSlice = createSlice({
         state.formFields.splice(focusedIndex + 1, 0, newFormField);
       }
     },
+
+    addInternalTitleField: (
+      state,
+      action: PayloadAction<{
+        type: string;
+        label: string;
+        required: boolean;
+        focus: boolean;
+        description?: string;
+      }>
+    ) => {
+      const { type, label, required, focus, description } = action.payload;
+
+      const focusedIndex = state.formFields.findIndex(
+        (field) => field.focus === true
+      );
+      // Ensure a focus field is found
+      if (focusedIndex !== -1) {
+        // Create a new form field
+        const newFormField = {
+          type,
+          id: nanoid(),
+          label,
+          required,
+          focus,
+          description,
+        };
+
+        // Set the previous focused field to false
+        state.formFields[focusedIndex].focus = false;
+
+        // Insert the new form field after the focused index
+        state.formFields.splice(focusedIndex + 1, 0, newFormField);
+      }
+    },
     handleDropField: (
       state,
       action: PayloadAction<{ source: number; destination: number }>
@@ -284,14 +403,58 @@ export const FormFieldSlice = createSlice({
       }
     },
 
-    setAllFormFields: (state, action: PayloadAction<AllFormField>) => {
-      const { formFields, userId, user, formName, isPublic } = action.payload;
-      state.formFields = formFields;
-      state.userId = userId;
-      state.user = user;
-      state.formName = formName;
+    handleIsPublicChange: (
+      state,
+      action: PayloadAction<{ isPublic: boolean }>
+    ) => {
+      const { isPublic } = action.payload;
       state.isPublic = isPublic;
-      return state;
+    },
+
+    handleAcceptingResponsesTillChange: (
+      state,
+      action: PayloadAction<{ acceptingResponsesTill: string }>
+    ) => {
+      const { acceptingResponsesTill } = action.payload;
+      state.acceptingResponsesTill = acceptingResponsesTill;
+    },
+
+    handleAcceptingResponseChange: (
+      state,
+      action: PayloadAction<{ AcceptingResponse: boolean }>
+    ) => {
+      const { AcceptingResponse } = action.payload;
+      state.acceptingResponses = AcceptingResponse;
+    },
+
+    setAllFormFields: (state, action: PayloadAction<AllFormField>) => {
+      const {
+        formFields,
+        userId,
+        user,
+        formName,
+        isPublic,
+        updatedAt,
+        _id,
+        formSettings,
+        acceptingResponses,
+        accessByRole,
+        acceptingResponsesTill,
+      } = action.payload;
+      return {
+        ...state,
+        formFields,
+        userId,
+        user,
+        formName,
+        isPublic,
+        updatedAt,
+        _id,
+        formSettings,
+        acceptingResponses,
+        accessByRole,
+        acceptingResponsesTill,
+      };
     },
   },
 });
@@ -303,7 +466,6 @@ export const {
   handleTypeChange,
   handleOptionChange,
   handleOtherChange,
-  handleOtherTextChange,
   handleRequiredChange,
   handleValidationChange,
   handleFileValidationChange,
@@ -314,6 +476,15 @@ export const {
   handleDropField,
   setAllFormFields,
   setFormName,
+  handleIsPublicChange,
+  setImageUrlKey,
+  setImageSettings,
+  setMinValue,
+  setMaxValue,
+  setStep,
+  addInternalTitleField,
+  handleAcceptingResponseChange,
+  handleAcceptingResponsesTillChange,
 } = FormFieldSlice.actions;
 
 export default FormFieldSlice.reducer;

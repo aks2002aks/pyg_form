@@ -1,6 +1,7 @@
 import { handleFileValidationChange } from "@/redux/features/formField/formFieldSlice";
+import { RootState } from "@/redux/store/store";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface Props {
   index: number;
@@ -8,26 +9,85 @@ interface Props {
 
 const FileUpload: React.FC<Props> = ({ index }) => {
   const dispatch = useDispatch();
-  const [allowedFileTypes, setAllowedFileTypes] = useState<string[]>([]);
-  const [maxNumFiles, setMaxNumFiles] = useState<number>(1);
-  const [maxFileSize, setMaxFileSize] = useState<number>(1); // in MB
-  const [showOptions, setShowOptions] = useState<boolean>(false);
+  const fileValidation = useSelector(
+    (state: RootState) => state.formField.formFields[index].fileValidation
+  );
+  const [allowedFileTypes, setAllowedFileTypes] = useState<string[]>(
+    fileValidation?.allowedFileTypes ?? []
+  );
+  const [maxFileSize, setMaxFileSize] = useState<number>(
+    fileValidation?.maxFileSize ?? 1
+  );
+  const [showOptions, setShowOptions] = useState<boolean>(
+    fileValidation?.allowedFileTypes.length > 0 ? true : false
+  );
 
   const handleToggleOptions = () => {
     setShowOptions(!showOptions);
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileType = e.target.value;
-    if (e.target.checked) {
-      setAllowedFileTypes([...allowedFileTypes, fileType]);
-    } else {
-      setAllowedFileTypes(allowedFileTypes.filter((type) => type !== fileType));
-    }
+  const fileTypeExtensions: Record<string, string[]> = {
+    presentation: [
+      ".ppt",
+      ".pptx",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ],
+    spreadsheet: [
+      ".xls",
+      ".xlsx",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ],
+    "application/pdf": [
+      ".pdf",
+      "application/pdf",
+      "application/x-pdf",
+      "application/acrobat",
+      "applications/vnd.pdf",
+      "text/pdf",
+      "text/x-pdf",
+      "application/vnd.adobe.acrobat.pdf",
+      "application/x-bzpdf",
+      "application/x-gzpdf",
+    ],
+    "image/*": ["image/png", "image/jpg", "image/jpeg", "image/gif"],
+    "video/*": ["video/mp4", "video/avi", "video/mov"],
+    "audio/*": ["audio/mp3", "audio/wav"],
+    document: [
+      ".doc",
+      ".docx",
+      ".zip", // Add .zip for ZIP files
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/zip",
+      "application/x-zip-compressed",
+    ],
   };
 
-  const handleMaxNumFilesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setMaxNumFiles(parseInt(e.target.value));
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileType = e.target.value;
+
+    // Check for specific file types
+    if (
+      fileType === "presentation" ||
+      fileType === "spreadsheet" ||
+      fileType === "application/pdf" ||
+      fileType === "image/*" ||
+      fileType === "video/*" ||
+      fileType === "audio/*" ||
+      fileType === "document"
+    ) {
+      const extensions = fileTypeExtensions[fileType];
+
+      if (e.target.checked) {
+        setAllowedFileTypes([...allowedFileTypes, ...extensions]);
+      } else {
+        setAllowedFileTypes(
+          allowedFileTypes.filter((type) => !extensions.includes(type))
+        );
+      }
+    }
   };
 
   const handleMaxFileSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -35,12 +95,20 @@ const FileUpload: React.FC<Props> = ({ index }) => {
   };
 
   useEffect(() => {
+    console.log(allowedFileTypes);
+  }, [allowedFileTypes]);
+
+  useEffect(() => {
     const handleSubmit = () => {
-      const newValidation: any = { allowedFileTypes, maxNumFiles, maxFileSize };
+      const newValidation: any = {
+        allowedFileTypes,
+        maxNumFiles: 1,
+        maxFileSize,
+      };
       dispatch(handleFileValidationChange({ index, newValidation }));
     };
     handleSubmit();
-  }, [allowedFileTypes, dispatch, index, maxFileSize, maxNumFiles]);
+  }, [allowedFileTypes, dispatch, index, maxFileSize]);
 
   return (
     <div className="flex flex-col md:w-1/2 space-y-6">
@@ -56,122 +124,154 @@ const FileUpload: React.FC<Props> = ({ index }) => {
           type="checkbox"
           role="switch"
           id="flexSwitchCheckDefault"
+          checked={showOptions}
           onClick={handleToggleOptions}
         />
       </div>
       {showOptions && (
         <div className="grid grid-rows-4 grid-flow-col gap-4">
-          <div className="form-check flex items-center ">
-            <input
-              className="form-check-input w-5 h-5  mr-2"
-              type="checkbox"
-              value="document"
-              id="document"
-              onChange={handleCheckboxChange}
-            />
-            <label className="form-check-label" htmlFor="document">
-              Document
-            </label>
-          </div>
-          <div className="form-check flex items-center ">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input w-5 h-5  mr-2"
               type="checkbox"
               value="presentation"
               id="presentation"
+              checked={
+                allowedFileTypes.includes(".ppt") ||
+                allowedFileTypes.includes(".pptx") ||
+                allowedFileTypes.includes("application/vnd.ms-powerpoint") ||
+                allowedFileTypes.includes(
+                  "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                )
+              }
               onChange={handleCheckboxChange}
             />
             <label className="form-check-label" htmlFor="presentation">
               Presentation
             </label>
           </div>
-          <div className="form-check flex items-center ">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input w-5 h-5  mr-2"
               type="checkbox"
               value="spreadsheet"
               id="spreadsheet"
+              checked={
+                allowedFileTypes.includes(".xls") ||
+                allowedFileTypes.includes(".xlsx") ||
+                allowedFileTypes.includes("application/vnd.ms-excel") ||
+                allowedFileTypes.includes(
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+              }
               onChange={handleCheckboxChange}
             />
             <label className="form-check-label" htmlFor="spreadsheet">
               Spreadsheet
             </label>
           </div>
-
-          <div className="form-check flex items-center ">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input w-5 h-5  mr-2"
               type="checkbox"
-              value="pdf"
+              value="application/pdf"
               id="pdf"
+              checked={
+                allowedFileTypes.includes(".pdf") ||
+                allowedFileTypes.includes("application/pdf") ||
+                allowedFileTypes.includes("application/x-pdf") ||
+                allowedFileTypes.includes("application/acrobat") ||
+                allowedFileTypes.includes("applications/vnd.pdf") ||
+                allowedFileTypes.includes("text/pdf") ||
+                allowedFileTypes.includes("text/x-pdf") ||
+                allowedFileTypes.includes(
+                  "application/vnd.adobe.acrobat.pdf"
+                ) ||
+                allowedFileTypes.includes("application/x-bzpdf") ||
+                allowedFileTypes.includes("application/x-gzpdf")
+              }
               onChange={handleCheckboxChange}
             />
             <label className="form-check-label" htmlFor="pdf">
               PDF
             </label>
           </div>
-          <div className="form-check flex items-center ">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input w-5 h-5  mr-2"
               type="checkbox"
-              value="image"
+              value="image/*"
               id="image"
+              checked={
+                allowedFileTypes.includes("image/png") ||
+                allowedFileTypes.includes("image/jpg") ||
+                allowedFileTypes.includes("image/jpeg") ||
+                allowedFileTypes.includes("image/gif")
+              }
               onChange={handleCheckboxChange}
             />
             <label className="form-check-label" htmlFor="image">
               Image
             </label>
           </div>
-          <div className="form-check flex items-center ">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input w-5 h-5  mr-2"
               type="checkbox"
-              value="video"
+              value="video/*"
               id="video"
+              checked={
+                allowedFileTypes.includes("video/mp4") ||
+                allowedFileTypes.includes("video/avi") ||
+                allowedFileTypes.includes("video/mov")
+              }
               onChange={handleCheckboxChange}
             />
             <label className="form-check-label" htmlFor="video">
               Video
             </label>
           </div>
-          <div className="form-check flex items-center ">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input w-5 h-5  mr-2"
               type="checkbox"
-              value="audio"
+              value="audio/*"
               id="audio"
+              checked={
+                allowedFileTypes.includes("audio/mp3") ||
+                allowedFileTypes.includes("audio/wav")
+              }
               onChange={handleCheckboxChange}
             />
             <label className="form-check-label" htmlFor="audio">
               Audio
             </label>
           </div>
-          <div className="form-check flex items-center ">
+          <div className="form-check flex items-center">
             <input
               className="form-check-input w-5 h-5  mr-2"
               type="checkbox"
-              value="drawing"
-              id="audio"
+              value="document"
+              id="document"
+              checked={
+                allowedFileTypes.includes(".doc") ||
+                allowedFileTypes.includes(".docx") ||
+                allowedFileTypes.includes(".zip") ||
+                allowedFileTypes.includes("application/msword") ||
+                allowedFileTypes.includes(
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                ) ||
+                allowedFileTypes.includes("application/zip") ||
+                allowedFileTypes.includes("application/x-zip-compressed")
+              }
               onChange={handleCheckboxChange}
             />
-            <label className="form-check-label" htmlFor="audio">
-              Drawing
+            <label className="form-check-label" htmlFor="document">
+              Document
             </label>
           </div>
         </div>
       )}
-      <div className="flex justify-between items-center">
-        <h3>Max Number of Files:</h3>
-        <select
-          value={maxNumFiles}
-          onChange={handleMaxNumFilesChange}
-          className="p-2 active:bg-gray-200 focus:bg-gray-200 rounded-md"
-        >
-          <option value={1}>1</option>
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-        </select>
-      </div>
       <div className="flex justify-between items-center">
         <h3>Max File Size (MB):</h3>
         <select
@@ -184,6 +284,9 @@ const FileUpload: React.FC<Props> = ({ index }) => {
           <option value={10}>10 MB</option>
           <option value={100}>100 MB</option>
         </select>
+      </div>
+      <div className="text-sm text-red-700 font-medium">
+        NOTE* : max upload limit for this form is 1GB
       </div>
     </div>
   );

@@ -17,4 +17,41 @@
       padding: 0;
     }
   }
+
+  a {
+    color: #68cef8;
+    cursor: pointer;
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+  }
+
+  ul li {
+    list-style-type: disc; /* or any other list style you prefer */
+  }
+
+  ol li {
+    list-style-type: decimal;
+  }
+}
+
+.tiptap {
+  > * + * {
+    margin-top: 0.75em;
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+  }
+}
+
+.tiptap p.is-editor-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }

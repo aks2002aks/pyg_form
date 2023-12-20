@@ -1,30 +1,31 @@
 import React, { SetStateAction, useEffect, useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { BiError } from "react-icons/bi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { handleOptionChange } from "@/redux/features/formField/formFieldSlice";
+import { RootState } from "@/redux/store/store";
 
 interface Props {
-  options: string[];
-  setOptions: React.Dispatch<SetStateAction<string[]>>;
   focus: boolean;
   index: number;
 }
 
-const DropDown: React.FC<Props> = ({ options, setOptions, focus, index }) => {
+const DropDown: React.FC<Props> = ({focus, index }) => {
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
+  const options = useSelector(
+    (state: RootState) => state.formField.formFields[index].options
+  ) as string[];
 
   const handleOptionInputChange = (i: number, value: string) => {
     const newOptions = [...options];
     newOptions[i] = value;
-    setOptions(newOptions);
+
     dispatch(handleOptionChange({ index, newOption: newOptions }));
   };
 
   const handleAddOption = () => {
     const NOption = "Option " + (options.length + 1);
-    setOptions([...options, NOption]);
     const newOptions = [...options, NOption];
     dispatch(handleOptionChange({ index, newOption: newOptions }));
   };
@@ -35,7 +36,6 @@ const DropDown: React.FC<Props> = ({ options, setOptions, focus, index }) => {
     }
     const newOptions = [...options];
     newOptions.splice(i, 1);
-    setOptions(newOptions);
     dispatch(handleOptionChange({ index, newOption: newOptions }));
   };
 
@@ -53,7 +53,6 @@ const DropDown: React.FC<Props> = ({ options, setOptions, focus, index }) => {
               className={`hover:border-b outline-none w-full focus:border-b-2 ${
                 isDuplicate ? "border-red-500" : ""
               }`}
-              autoFocus={focus}
             />
             <div
               onMouseEnter={() => setIsHovered(true)}

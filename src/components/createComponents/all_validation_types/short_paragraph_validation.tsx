@@ -1,7 +1,8 @@
 import { handleValidationChange } from "@/redux/features/formField/formFieldSlice";
+import { RootState } from "@/redux/store/store";
 import React, { useEffect, useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface Props {
   setShowValidation: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,9 +16,16 @@ const ShortParagraphValidation: React.FC<Props> = ({
   showValidation,
 }) => {
   const dispatch = useDispatch();
-  const [selectedOption, setSelectedOption] = useState("greaterThan");
-  const [numberInput, setNumberInput] = useState(0);
-  const [customErrorMessage, setCustomErrorMessage] = useState("");
+  const validation = useSelector(
+    (state: RootState) => state.formField.formFields[index].validation
+  );
+  const [selectedOption, setSelectedOption] = useState(
+    validation?.selectedOption
+  );
+  const [numberInput, setNumberInput] = useState(validation?.numberInput);
+  const [customErrorMessage, setCustomErrorMessage] = useState(
+    validation?.customErrorMessage
+  );
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);

@@ -1,11 +1,17 @@
 "use client";
 
-import React from "react";
-import { useSearchParams } from "next/navigation";
+import React, { Suspense } from "react";
+import ResponsePage from "./responsePage";
+import ResponsePageSkeleton from "./responsePageSkeleton";
 
 const Page = () => {
-  const formid = useSearchParams().get("formid");
-  return <div>Page - {formid}</div>;
+  return (
+    <div>
+      <Suspense fallback={ <ResponsePageSkeleton/>}>
+         <ResponsePage/>
+      </Suspense>
+    </div>
+  );
 };
 
 export default Page;

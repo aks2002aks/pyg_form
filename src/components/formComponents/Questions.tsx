@@ -13,24 +13,20 @@ import {
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
-import {
-  handleDropField,
-  setFormName,
-} from "@/redux/features/formField/formFieldSlice";
+import { handleDropField } from "@/redux/features/formField/formFieldSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { BsFillEyeFill } from "react-icons/bs";
-import { MdPublish } from "react-icons/md";
-import { FaFileWaveform } from "react-icons/fa6";
-import Link from "next/link";
 import ShareModal from "../modal/shareModal";
+import toast from "react-hot-toast";
 
 const CreateForm = () => {
   const dispatch = useDispatch();
-  const formFields = useSelector((state: RootState) => state.formFields);
-  const formName = useSelector((state: RootState) => state.formName);
+  const formFields = useSelector(
+    (state: RootState) => state.formField.formFields
+  );
+
   const [isBrowser, setIsBrowser] = useState(false);
-  const [openShare, setOpenShare] = useState(false);
+
   const formid = useSearchParams().get("formid");
   const router = useRouter();
   const { data: session } = useSession();
@@ -42,8 +38,13 @@ const CreateForm = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(formFields);
+  }, [formFields]);
+
   const handleSaveEdit = async () => {
     setLoading(true);
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/editQuestionForm`,
@@ -63,10 +64,12 @@ const CreateForm = () => {
       const { success, id } = await res.json();
 
       if (!success) {
-        console.error("Failed to edit question form.");
+        toast.error("Failed to edit question form.");
+      } else {
+        toast.success("Saved SucessFully");
       }
     } catch (error) {
-      console.error("Error editing question form:", error);
+      toast.error("Error editing question form:" + error);
     }
     setLoading(false);
   };
@@ -93,102 +96,10 @@ const CreateForm = () => {
   const handleDragEnd = () => {
     setIsDragging(false);
   };
-  const handleFormNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setFormName(event.target.value));
-  };
-
-  const handleFormNameBlur = async () => {
-    // Call API to set the form name
-    // Example: api.setFormName(allFormFields.formName)
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/setFormName`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: session?.user?.id,
-            formName: formName,
-            formId: formid,
-          }),
-        }
-      );
-
-      const { success } = await res.json();
-
-      if (!success) {
-        console.error("Failed to edit question form name.");
-      }
-    } catch (error) {
-      console.error("Error editing question form name:", error);
-    }
-  };
-
-  const handlePublishForm = async () => {
-    setLoading(true);
-    // try {
-    //   const res = await fetch(
-    //     `${process.env.NEXT_PUBLIC_API_URL}/api/publishQuestionForm`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({
-    //         userId: session?.user?.id,
-    //         formId: formid,
-    //       }),
-    //     }
-    //   );
-
-    //   const { success } = await res.json();
-
-    //   if (!success) {
-    //     console.error("Failed to publish question form.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error publishing question form:", error);
-    // }
-    setLoading(false);
-    setOpenShare(true);
-  };
 
   return (
-    <>
-      <ShareModal
-        openShare={openShare}
-        setOpenShare={setOpenShare}
-        postId={formid as string}
-      />
-      <div className="flex justify-between items-center  border-b md:p-5 p-3">
-        <div className="flex  items-center overflow-x-auto whitespace-nowrap ">
-          <FaFileWaveform size={25} />
-          <input
-            type="text"
-            className="focus:border-b focus:border-black focus:outline-none  w-full  py-1 text-xl  mr-4 ml-2"
-            value={formName}
-            onChange={handleFormNameChange}
-            onBlur={handleFormNameBlur}
-          />
-        </div>
-        <div className="flex space-x-4">
-          <Link href={`/forms/form?formid=${formid}`} target="_blank">
-            <BsFillEyeFill
-              size={35}
-              className="hover:bg-gray-200 p-2 rounded-full cursor-pointer"
-            />{" "}
-          </Link>
-
-          <MdPublish
-            size={35}
-            className="hover:bg-gray-200 p-2 rounded-full cursor-pointer"
-            onClick={handlePublishForm}
-          />
-        </div>
-      </div>
-      <div className="bg-gray-100 flex flex-col space-y-4 justify-center items-center p-4 md:p-12 pb-20">
+    <div>
+      <div className="bg-gray-100 flex flex-col space-y-4 justify-center items-center pt-3 p-4 md:pl-12 md:pr-12 md:pb-12 pb-20 cursor-default">
         <DragDropContext onDragEnd={handleDragAndDrop}>
           {isBrowser ? (
             <Droppable droppableId="ROOT" type="group">
@@ -220,6 +131,7 @@ const CreateForm = () => {
                                   index={index}
                                   handleDragStart={handleDragStart}
                                   handleDragEnd={handleDragEnd}
+                                  handleSaveEdit={handleSaveEdit}
                                 />
                               </div>
 
@@ -244,10 +156,92 @@ const CreateForm = () => {
           className="fixed bottom-20 z-20 right-4 bg-red-200 hover:bg-red-400  py-2 px-4 rounded-full"
           onClick={handleSaveEdit}
         >
-          {loading ? <div className="animate-spin">🔄</div> : "Save"}
+          {loading ? (
+            <div className="flex items-center space-x-2 ">
+              <svg
+                className="h-5 w-5 animate-spin stroke-gray-500"
+                viewBox="0 0 256 256"
+              >
+                <line
+                  x1="128"
+                  y1="32"
+                  x2="128"
+                  y2="64"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+                <line
+                  x1="195.9"
+                  y1="60.1"
+                  x2="173.3"
+                  y2="82.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+                <line
+                  x1="224"
+                  y1="128"
+                  x2="192"
+                  y2="128"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+                <line
+                  x1="195.9"
+                  y1="195.9"
+                  x2="173.3"
+                  y2="173.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+                <line
+                  x1="128"
+                  y1="224"
+                  x2="128"
+                  y2="192"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+                <line
+                  x1="60.1"
+                  y1="195.9"
+                  x2="82.7"
+                  y2="173.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+                <line
+                  x1="32"
+                  y1="128"
+                  x2="64"
+                  y2="128"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+                <line
+                  x1="60.1"
+                  y1="60.1"
+                  x2="82.7"
+                  y2="82.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="24"
+                ></line>
+              </svg>
+            </div>
+          ) : (
+            "Save"
+          )}
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
