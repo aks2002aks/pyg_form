@@ -117,7 +117,7 @@ const Navbar = () => {
                       </p>
                     </Link>
                     <div onClick={logout}>
-                      <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                      <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer ">
                         Sign out
                       </p>
                     </div>

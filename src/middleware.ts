@@ -6,6 +6,6 @@ export const config = {
     "/forms",
     "/forms/editResponse",
     "/edit/:path*",
-    "/profile/:path*",
+    "/profile",
   ],
 };

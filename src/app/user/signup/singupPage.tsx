@@ -1,6 +1,6 @@
 "use client";
 
-import React  from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,11 +8,11 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
-
+import Loader from "@/components/common/loader";
 
 const SingupPage = () => {
   const router = useRouter();
- 
+
   const [loading, setLoading] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -36,8 +36,6 @@ const SingupPage = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
     useState("");
-
-
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -157,7 +155,7 @@ const SingupPage = () => {
               firstName,
               lastName,
               phone: phoneNumber,
-              email,
+              email: email.toLowerCase(),
               password,
             }),
           }
@@ -165,9 +163,8 @@ const SingupPage = () => {
 
         if (response.ok) {
           setLoginSuccess(true);
-          setTimeout(() => {
-            router.push("/user/login");
-          }, 1000);
+          setLoading(false);
+          router.push("/user/login");
         } else {
           const res = await response.json();
 
@@ -195,50 +192,7 @@ const SingupPage = () => {
   };
   return (
     <>
-      {loading && (
-        <div className="">
-          <div className="fixed inset-0 z-50 flex items-center justify-center w-full h-screen bg-gray-900 bg-opacity-50">
-            <div className="w-64 h-64 rounded-full flex items-center justify-center">
-              {loginSuccess ? (
-                <AnimatePresence>
-                  {loginSuccess && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="green"
-                      className="CheckIcon h-16 w-16"
-                    >
-                      <motion.path
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        exit={{ pathLength: 0 }}
-                        transition={{
-                          type: "tween",
-                          duration: 0.3,
-                          ease: loginSuccess ? "easeOut" : "easeIn",
-                        }}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4.5 12.75l6 6 9-13.5"
-                      />
-                    </svg>
-                  )}
-                </AnimatePresence>
-              ) : (
-                <motion.div
-                  className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"
-                  variants={variants}
-                  initial="initial"
-                  animate="complete"
-                  transition={{ duration: 1, repeat: Infinity }}
-                ></motion.div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {loading && <Loader />}
       <div className="bg-white container mx-auto md:py-20 py-10">
         <div className="flex flex-col md:flex-row justify-center items-center">
           <div className="lg:block hidden bg-cover max-w-md  justify-center">

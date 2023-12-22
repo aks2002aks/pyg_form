@@ -12,7 +12,7 @@ interface formField {
 interface Props {
   setDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
   selectedForm: formField | null;
-  setforms: React.Dispatch<React.SetStateAction<formField[] | undefined>>;
+  setForms: React.Dispatch<React.SetStateAction<formField[] | undefined>>;
   forms: formField[];
 }
 
@@ -20,7 +20,7 @@ const ConfirmationModal: React.FC<Props> = ({
   setDeleteConfirmation,
   selectedForm,
   forms,
-  setforms,
+  setForms,
 }) => {
   const { data: session } = useSession();
 
@@ -31,17 +31,19 @@ const ConfirmationModal: React.FC<Props> = ({
       await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/aws/s3/deleteFormFiles?formId=${selectedForm?._id}`
       );
-     
 
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/deleteFormResponses`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          formId: selectedForm?._id,
-        }),
-      });
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/deleteFormResponses`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            formId: selectedForm?._id,
+          }),
+        }
+      );
 
       await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/aws/s3/deleteFormImages?formId=${selectedForm?._id}`
@@ -60,7 +62,7 @@ const ConfirmationModal: React.FC<Props> = ({
 
       toast.success("Form deleted successfully");
 
-      setforms(forms.filter((form) => form._id !== selectedForm?._id));
+      setForms(forms.filter((form) => form._id !== selectedForm?._id));
       setDeleteConfirmation(false);
     } catch (error) {
       toast.error("Form deletion error : " + error);
@@ -79,7 +81,8 @@ const ConfirmationModal: React.FC<Props> = ({
             <div className="mt-4 md:mt-0 md:ml-6 text-center md:text-left">
               <p className="font-bold">Warning!</p>
               <p className="text-sm text-gray-700 mt-1">
-                You will lose all of your form data by deleting this and the response and files related to it will also get Deleted. This
+                You will lose all of your form data by deleting this and the
+                response and files related to it will also get Deleted. This
                 action cannot be undone.
               </p>
             </div>

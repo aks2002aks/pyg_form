@@ -79,6 +79,7 @@ const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.isEmailVerified = user.isEmailVerified;
         token.isPhoneVerified = user.isPhoneVerified;
+        token.profileImageUrl = user.profileImageUrl;
         token.updatedAt = user.updatedAt;
         token.createdAt = user.createdAt;
       }
@@ -103,6 +104,7 @@ const authOptions: NextAuthOptions = {
         session.user.role = token.role;
         session.user.isEmailVerified = token.isEmailVerified;
         session.user.isPhoneVerified = token.isPhoneVerified;
+        session.user.profileImageUrl = token.profileImageUrl;
         session.user.updatedAt = token.updatedAt;
         session.user.createdAt = token.createdAt;
       }

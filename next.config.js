@@ -3,9 +3,9 @@ module.exports = {
       remotePatterns: [
         {
           protocol: 'https',
-          hostname: 'dummyimage.com',
+          hostname: 'source.unsplash.com',
           port: '',
-          pathname: '/720x400',
+          pathname: '/**',
         },
         {
           protocol: 'https',
@@ -16,6 +16,12 @@ module.exports = {
         {
           protocol: 'https',
           hostname: 'preview.ibb.co',
+          port: '',
+          pathname: '/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'demos.creative-tim.com',
           port: '',
           pathname: '/**',
         },

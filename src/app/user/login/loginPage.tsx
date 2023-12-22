@@ -10,12 +10,12 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useSearchParams } from "next/navigation";
+import Loader from "@/components/common/loader";
 
 const LoginPage = () => {
   const router = useRouter();
   const param = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -51,6 +51,7 @@ const LoginPage = () => {
     } else {
       setEmailError(false);
       setEmailErrorMessage("");
+      setEmail(email.toLowerCase());
     }
 
     if (password.length < 8) {
@@ -84,11 +85,10 @@ const LoginPage = () => {
         });
 
         if (result?.ok) {
-          setLoginSuccess(true);
+          router.push(callbackUrl);
           setTimeout(() => {
             setLoading(false);
-            router.push(callbackUrl);
-          }, 1000);
+          }, 2000);
         } else {
           setLoading(false);
           toast.error("" + result?.error);
@@ -103,57 +103,9 @@ const LoginPage = () => {
     }
   };
 
-  const variants = {
-    initial: { rotate: 0 },
-    complete: { rotate: 360 },
-  };
-
   return (
     <>
-      {loading && (
-        <div className="">
-          <div className="fixed inset-0 z-50 flex items-center justify-center w-full h-screen bg-gray-900 bg-opacity-50">
-            <div className="w-64 h-64 rounded-full flex items-center justify-center">
-              {loginSuccess ? (
-                <AnimatePresence>
-                  {loginSuccess && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="green"
-                      className="CheckIcon h-16 w-16"
-                    >
-                      <motion.path
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        exit={{ pathLength: 0 }}
-                        transition={{
-                          type: "tween",
-                          duration: 0.3,
-                          ease: loginSuccess ? "easeOut" : "easeIn",
-                        }}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4.5 12.75l6 6 9-13.5"
-                      />
-                    </svg>
-                  )}
-                </AnimatePresence>
-              ) : (
-                <motion.div
-                  className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"
-                  variants={variants}
-                  initial="initial"
-                  animate="complete"
-                  transition={{ duration: 1, repeat: Infinity }}
-                ></motion.div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {loading && <Loader />}
       <div className="bg-white container mx-auto md:py-20 py-10">
         <div className="flex flex-col md:flex-row justify-center items-center">
           <div className="lg:block hidden bg-cover max-w-md  justify-center">
