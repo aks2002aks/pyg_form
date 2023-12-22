@@ -145,36 +145,44 @@ const ResponsePage = () => {
       ) {
         // if form accepting
         if (formSettings.response.collectEmailAddresses === "Verified") {
-          if (
-            session?.user?.role &&
-            accessByRole.includes(session.user.role as string)
-          ) {
-            if (formSettings?.response.limitToOneResponsePerPerson) {
-              // check if user already submitted the response or not
-              if (userResponded) {
-                // if user already submitted the response
-                return (
-                  <SubmitResponse>
-                    <div className="p-7 w-full rounded-lg space-y-4">
-                      <h1 style={{ fontSize: "35px" }}>{formName}</h1>
-                      <p>Your Response is already submitted.</p>
-                      <p>
-                        Try contacting the owner of the form if you think that
-                        this is a mistake.
-                      </p>
-                      {formSettings?.response.allowResponseEditing && (
-                        <div className="mt-3">
-                          <Link
-                            href={`/forms/editResponse?formid=${formId}&responseid=${ResponseId}`}
-                            className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
-                          >
-                            Edit Your Response
-                          </Link>
-                        </div>
-                      )}
+          if (session?.user?.isEmailVerified) {
+            if (
+              session?.user?.role &&
+              accessByRole.includes(session.user.role as string)
+            ) {
+              if (formSettings?.response.limitToOneResponsePerPerson) {
+                // check if user already submitted the response or not
+                if (userResponded) {
+                  // if user already submitted the response
+                  return (
+                    <SubmitResponse>
+                      <div className="p-7 w-full rounded-lg space-y-4">
+                        <h1 style={{ fontSize: "35px" }}>{formName}</h1>
+                        <p>Your Response is already submitted.</p>
+                        <p>
+                          Try contacting the owner of the form if you think that
+                          this is a mistake.
+                        </p>
+                        {formSettings?.response.allowResponseEditing && (
+                          <div className="mt-3">
+                            <Link
+                              href={`/forms/editResponse?formid=${formId}&responseid=${ResponseId}`}
+                              className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
+                            >
+                              Edit Your Response
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </SubmitResponse>
+                  );
+                } else {
+                  return (
+                    <div>
+                      <FillResponse />
                     </div>
-                  </SubmitResponse>
-                );
+                  );
+                }
               } else {
                 return (
                   <div>
@@ -184,9 +192,28 @@ const ResponsePage = () => {
               }
             } else {
               return (
-                <div>
-                  <FillResponse />
-                </div>
+                <SubmitResponse>
+                  <div className="p-7 w-full rounded-lg space-y-4">
+                    <h1 style={{ fontSize: "35px" }}>{formName}</h1>
+                    <p>
+                      The Access to form{" "}
+                      <span className="font-semibold">{formName}</span> is
+                      restricted to verified users only with specfic role. Login
+                      with a Accesible Account to access the form.{" "}
+                      <Link
+                        href={"/user/login"}
+                        className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
+                      >
+                        Login
+                      </Link>
+                    </p>
+
+                    <p>
+                      Try contacting the owner of the form if you think that
+                      this is a mistake.
+                    </p>
+                  </div>
+                </SubmitResponse>
               );
             }
           } else {
@@ -197,13 +224,13 @@ const ResponsePage = () => {
                   <p>
                     The Access to form{" "}
                     <span className="font-semibold">{formName}</span> is
-                    restricted to verified users only with specfic role. Login
-                    with a Accesible Account to access the form.{" "}
+                    restricted to verified users only. Go to your profile and
+                    verify your email address.{" "}
                     <Link
-                      href={"/user/login"}
+                      href={"/profile"}
                       className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
                     >
-                      Login
+                      profile
                     </Link>
                   </p>
 
