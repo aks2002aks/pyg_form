@@ -102,7 +102,7 @@ export default function ShareModal({
               <EmailShareButton
                 subject="Shared a Pyg Form With you"
                 body={`Link to the Post is :`}
-                url={`http://localhost:3000/forms/form?formid=${postId}`}
+                url={`${process.env.NEXT_PUBLIC_HOSTED_URL}/forms/form?formid=${postId}`}
               >
                 <EmailIcon
                   className="mt-2 mb-2"
@@ -123,7 +123,7 @@ export default function ShareModal({
 
               <FacebookShareButton
                 hashtag="Shared a Pyg Form With you"
-                url={`http://localhost:3000/forms/form?formid=${postId}`}
+                url={`${process.env.NEXT_PUBLIC_HOSTED_URL}/forms/form?formid=${postId}`}
               >
                 <FacebookIcon
                   className="mt-2 mb-2"
@@ -134,7 +134,7 @@ export default function ShareModal({
 
               <TwitterShareButton
                 title="Shared a Pyg Form With you"
-                url={`http://localhost:3000/forms/form?formid=${postId}`}
+                url={`${process.env.NEXT_PUBLIC_HOSTED_URL}/forms/form?formid=${postId}`}
               >
                 <TwitterIcon
                   className="mt-2 mb-2"
@@ -145,7 +145,7 @@ export default function ShareModal({
 
               <RedditShareButton
                 title="Shared a Pyg Form With you"
-                url={`http://localhost:3000/forms/form?formid=${postId}`}
+                url={`${process.env.NEXT_PUBLIC_HOSTED_URL}/forms/form?formid=${postId}`}
               >
                 <RedditIcon
                   className="mt-2 mb-2"
@@ -156,7 +156,7 @@ export default function ShareModal({
 
               <TelegramShareButton
                 title="Shared a Pyg Form With you"
-                url={`http://localhost:3000/forms/form?formid=${postId}`}
+                url={`${process.env.NEXT_PUBLIC_HOSTED_URL}/forms/form?formid=${postId}`}
               >
                 <TelegramIcon
                   className="mt-2 mb-2"
@@ -170,7 +170,7 @@ export default function ShareModal({
               <div className="flex flex-wrap items-center">
                 <input
                   type="text"
-                  value={`http://localhost:3000/forms/form?formid=${postId}`}
+                  value={`${process.env.NEXT_PUBLIC_HOSTED_URL}/forms/form?formid=${postId}`}
                   readOnly
                   className=" w-full mr-2 mb-2 focus:outline-none focus:border-b focus:border-black"
                 ></input>
@@ -179,7 +179,7 @@ export default function ShareModal({
                   onClick={() => {
                     navigator.clipboard
                       .writeText(
-                        `http://localhost:3000/forms/form?formid=${postId}`
+                        `${process.env.NEXT_PUBLIC_HOSTED_URL}/forms/form?formid=${postId}`
                       )
                       .then(
                         () => {
