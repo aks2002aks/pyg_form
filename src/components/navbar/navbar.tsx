@@ -68,7 +68,19 @@ const Navbar = () => {
             onClick={toggleUserDropdown}
           >
             <span className="sr-only">Open user menu</span>
-
+            {session?.user?.profileImageUrl ? (
+            <Image
+              src={
+                process.env.NEXT_PUBLIC_AWS_IMAGE_CDN +
+                "/" +
+                session?.user?.profileImageUrl
+              }
+              alt="user photo"
+              height={32}
+              width={32}
+              className="w-8 h-8 rounded-full"
+            />
+          ) : (
             <Image
               className="w-8 h-8 rounded-full"
               src="/user.png"
@@ -76,6 +88,8 @@ const Navbar = () => {
               height={32}
               width={32}
             />
+          )}
+            
           </button>
 
           {isUserDropdownOpen && (
@@ -97,6 +111,16 @@ const Navbar = () => {
                 {loggedIn && (
                   <>
                     <Link
+                      href={"/"}
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                      }}
+                    >
+                      <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                        Home
+                      </p>
+                    </Link>
+                    <Link
                       href={"/forms"}
                       onClick={() => {
                         setIsUserDropdownOpen(false);
@@ -104,6 +128,16 @@ const Navbar = () => {
                     >
                       <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
                         My Forms
+                      </p>
+                    </Link>
+                    <Link
+                      href={"/myResponses"}
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                      }}
+                    >
+                      <p className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">
+                        My Responses
                       </p>
                     </Link>
                     <Link

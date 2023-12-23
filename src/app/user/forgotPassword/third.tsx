@@ -1,7 +1,10 @@
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const Third = () => {
+const Third = ({ inputValue }: { inputValue: string }) => {
+  const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPasswordError, setNewPasswordError] = useState(false);
@@ -68,15 +71,38 @@ const Third = () => {
     return isValid;
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formIsValid = validateForm();
 
     if (formIsValid) {
-      console.log(JSON.stringify({ newPassword, confirmPassword }));
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/forgotPassword`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: inputValue,
+              newPassword,
+            }),
+          }
+        );
+        const { success, message } = await res.json();
+        if (success) {
+          toast.success(message);
+          router.push("/user/login");
+        } else {
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
     } else {
-      console.log("Validation error occurred");
+      toast.error("Validation error occurred");
     }
   };
 

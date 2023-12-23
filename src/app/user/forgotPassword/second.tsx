@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import toast from "react-hot-toast";
 import { FiArrowLeft } from "react-icons/fi";
 
 interface SecondProps {
@@ -17,6 +18,41 @@ const Second: React.FC<SecondProps> = ({
   const [otp, setOtp] = useState<string[]>([]);
   const [isError, setIsError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [timer, setTimer] = useState(300);
+  const [ResendTimer, setResendTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setResendTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (ResendTimer === 0) {
+      setCanResend(true);
+    }
+  }, [setCanResend, ResendTimer]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (timer === 0) {
+      handleBack();
+    }
+  }, [handleBack, timer]);
 
   useEffect(() => {
     if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputValue)) {
@@ -56,15 +92,55 @@ const Second: React.FC<SecondProps> = ({
     }
   };
 
-  const handleOtpVerification = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleOtpVerification = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     const enteredOtp = otp.join("");
-    const expectedOtp = "1234"; // Replace with your expected OTP
-    if (enteredOtp === expectedOtp) {
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/verifyOTPUsingEmail`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: inputValue,
+          otp: enteredOtp,
+        }),
+      }
+    );
+    const { success, message } = await res.json();
+
+    if (success) {
       setIsError(false);
       handleNext();
+      toast.success(message);
     } else {
       setIsError(true);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/resendEmailOTP`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: inputValue,
+        }),
+      }
+    );
+    const { success, message } = await res.json();
+
+    if (success) {
+      toast.success(message);
+    } else {
+      toast.error(message);
     }
   };
 
@@ -90,11 +166,19 @@ const Second: React.FC<SecondProps> = ({
           <p>
             We have sent a code to your{" "}
             {isEmail ? "email" : isPhone ? "phone number" : ""}{" "}
-            {isEmail ? inputValue : isPhone ? `${inputValue}` : ""}
+            <span className="font-bold text-black">
+              {isEmail ? inputValue : isPhone ? `${inputValue}` : ""}
+            </span>
           </p>
         </div>
         <div className="flex flex-row text-sm font-medium text-gray-400">
           <p>Enter the Otp</p>
+        </div>
+        <div className="flex flex-row text-sm font-medium text-gray-400">
+          <p>
+            Valid For: {Math.floor(timer / 60)}:{timer % 60 < 10 ? "0" : ""}
+            {timer % 60}
+          </p>
         </div>
       </div>
 
@@ -136,14 +220,16 @@ const Second: React.FC<SecondProps> = ({
 
               <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                 <p>Didn&apos;t recieve code?</p>{" "}
-                <a
-                  className="flex flex-row items-center text-blue-600"
-                  href="http://"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Resend
-                </a>
+                {canResend ? (
+                  <p
+                    className="flex flex-row items-center text-blue-600 cursor-pointer"
+                    onClick={handleResendOtp}
+                  >
+                    Resend
+                  </p>
+                ) : (
+                  <p>Resend in {ResendTimer} seconds</p>
+                )}
               </div>
             </div>
           </div>

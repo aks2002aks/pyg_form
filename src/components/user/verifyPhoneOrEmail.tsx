@@ -20,6 +20,24 @@ const VerifyPhoneOrEmail: React.FC<VerifyPhoneOrEmailProps> = ({
   const [errorMessage, setErrorMessage] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [timer, setTimer] = useState(300);
+  const [ResendTimer, setResendTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setResendTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (ResendTimer === 0) {
+      setCanResend(true);
+    }
+  }, [setCanResend, ResendTimer]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -208,12 +226,18 @@ const VerifyPhoneOrEmail: React.FC<VerifyPhoneOrEmailProps> = ({
 
                     <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                       <p>Didn&apos;t recieve code?</p>{" "}
-                      <p
-                        className="flex flex-row items-center text-blue-600 cursor-pointer"
-                        onClick={handleResendOtp}
-                      >
-                        Resend
-                      </p>
+                      {canResend ? (
+                        <p
+                          className="flex flex-row items-center text-blue-600 cursor-pointer"
+                          onClick={handleResendOtp}
+                        >
+                          Resend
+                        </p>
+                      ) : (
+                        <p>Resend in {Math.ceil(ResendTimer / 1000)}:
+                        {timer % 60 < 10 ? "0" : ""}
+                        {timer % 60} seconds</p>
+                      )}
                     </div>
                   </div>
                 </div>

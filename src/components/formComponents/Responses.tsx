@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ViewResponseHeader from "../viewResponses/viewResponseHeader";
 import { useSearchParams } from "next/navigation";
-import VefiredResponseViewer from "../viewResponses/verifiedResponseViewer";
+import VerifiedResponseViewer from "../viewResponses/verifiedResponseViewer";
 import UnverifiedResponseViewer from "../viewResponses/unverifiedResponseViewer";
 import SearchResposne from "../viewResponses/searchResponse";
 
@@ -76,7 +76,7 @@ const Responses = () => {
             {activeTab === "individual" && (
               <>
                 {allVerifiedResponses.length > 0 && (
-                  <VefiredResponseViewer
+                  <VerifiedResponseViewer
                     allVerifiedResponses={allVerifiedResponses}
                   />
                 )}

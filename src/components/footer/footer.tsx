@@ -21,13 +21,13 @@ const Footer = () => {
             Genrating platform that helps you to create your own form with ease.
           </p>
           <div className="flex w-full mt-2 mb-8 -mx-2">
-            <div className="mx-2 bg-white-500 rounded-full items-center justify-center flex p-2 shadow-md">
+            <div className="mx-2 bg-white rounded-full items-center justify-center flex p-2 shadow-md cursor-pointer hover:bg-gray-100">
               <FaFacebookF className="h-6 w-6" />
             </div>
-            <div className="mx-2 bg-white-500 rounded-full items-center justify-center flex p-2 shadow-md">
+            <div className="mx-2 bg-white rounded-full items-center justify-center flex p-2 shadow-md cursor-pointer hover:bg-gray-100">
               <FaTwitter className="h-6 w-6" />
             </div>
-            <div className="mx-2 bg-white-500 rounded-full items-center justify-center flex p-2 shadow-md">
+            <div className="mx-2 bg-white rounded-full items-center justify-center flex p-2 shadow-md cursor-pointer hover:bg-gray-100">
               <RiInstagramFill className="h-6 w-6" />
             </div>
           </div>
@@ -39,6 +39,9 @@ const Footer = () => {
           <p className="text-black-600 mb-4 font-medium text-lg">Product</p>
           <ul className="text-black-500 ">
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
+              Coming Soon{" "}
+            </li>
+            {/* <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
               Download{" "}
             </li>
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
@@ -55,13 +58,16 @@ const Footer = () => {
             </li>
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
               Blog{" "}
-            </li>
+            </li> */}
           </ul>
         </div>
         <div className="row-span-2 sm:col-span-2 sm:col-start-9 sm:col-end-11 flex flex-col">
           <p className="text-black-600 mb-4 font-medium text-lg">Engage</p>
           <ul className="text-black-500">
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
+              Coming Soon{" "}
+            </li>
+            {/* <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
               LaslesVPN ?{" "}
             </li>
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
@@ -78,18 +84,21 @@ const Footer = () => {
             </li>
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
               Terms of Service{" "}
-            </li>
+            </li> */}
           </ul>
         </div>
         <div className="row-span-2 sm:col-span-2 sm:col-start-11 sm:col-end-13 flex flex-col">
           <p className="text-black-600 mb-4 font-medium text-lg">Earn Money</p>
           <ul className="text-black-500">
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
+              Coming Soon{" "}
+            </li>
+            {/* <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
               Affiliate{" "}
             </li>
             <li className="my-2 hover:text-orange-500 cursor-pointer transition-all">
               Become Partner{" "}
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

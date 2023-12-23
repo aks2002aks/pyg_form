@@ -1,12 +1,14 @@
 "use client";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 interface FirstProps {
   handleInput: (value: string) => void;
   handleNext: () => void;
 }
 
-const First = ({ handleInput }: FirstProps) => {
+const First = ({ handleInput ,handleNext}: FirstProps) => {
   const [inputType, setInputType] = useState("email");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -14,7 +16,7 @@ const First = ({ handleInput }: FirstProps) => {
     setInputType(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const input = document.getElementById("input") as HTMLInputElement;
     const isValid =
@@ -23,6 +25,20 @@ const First = ({ handleInput }: FirstProps) => {
         : isValidEmail(input.value);
     if (isValid) {
       handleInput(input.value);
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sendEmailOTP`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: input.value,
+          }),
+        });
+        handleNext();
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
     } else {
       setErrorMessage("Invalid input");
     }
@@ -55,7 +71,7 @@ const First = ({ handleInput }: FirstProps) => {
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col mt-8 space-y-3 sm:space-y-0 sm:justify-center sm:-mx-2">
                 <div className="flex flex-row items-center justify-center space-x-4 pb-4">
-                  <div className="flex ">
+                  {/* <div className="flex ">
                     <input
                       id="phone"
                       type="radio"
@@ -65,7 +81,7 @@ const First = ({ handleInput }: FirstProps) => {
                       className="mr-2"
                     />
                     <label htmlFor="phone">Phone Number</label>
-                  </div>
+                  </div> */}
 
                   <div className="flex items-center">
                     <input

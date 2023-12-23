@@ -48,7 +48,7 @@ const ForgotPassword = () => {
           handleNext={handleNext}
         />
       )}
-      {step === 3 && <ForgotPasswordThird />}
+      {step === 3 && <ForgotPasswordThird inputValue={inputValue} />}
     </>
   );
 };
