@@ -31,7 +31,6 @@ const Multiple_choice: React.FC<Props> = ({
   const [othertext, setOthertext] = useState("");
 
   useEffect(() => {
-    console.log(selectedOption);
     dispatch(
       answerFormField({
         formFieldId: fieldId,

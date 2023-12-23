@@ -18,11 +18,8 @@ const SearchResponse = () => {
   };
 
   const handleSearch = async () => {
-    console.log("Searching for:", searchText);
-    console.log("Search type:", searchType);
 
     if (searchType === "email") {
-      console.log("Searching by email");
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/getAllResponsesByEmailId`,
         {
@@ -38,7 +35,6 @@ const SearchResponse = () => {
       const resp = await res.json();
       setAllResponses(resp.response);
     } else if (searchType === "responseId") {
-      console.log("Searching by responseId");
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/getResponseByResponseId`,
         {
@@ -57,7 +53,6 @@ const SearchResponse = () => {
     } else {
       toast.error("Please enter a valid email or responseId");
     }
-    console.log("allResponses", allResponses);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

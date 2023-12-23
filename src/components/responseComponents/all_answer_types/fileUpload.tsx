@@ -72,7 +72,6 @@ const FileUpload: React.FC<Props> = ({
         }
       } else {
         if (file.size <= 10 * 1024 * 1024) {
-          // console.log(" ia m in")
           // File size is within the allowed limit
           setSelectedFile(file);
           setSelectedFiles([...(selectedFiles || []), { fieldId, file }]);

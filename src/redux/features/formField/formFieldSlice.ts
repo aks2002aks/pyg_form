@@ -178,7 +178,6 @@ export const FormFieldSlice = createSlice({
         const updatedFormFields = newFormFields.filter(
           (_, index) => index !== focusedIndex
         );
-        console.log(updatedFormFields);
         // Update the state with the new array
         state.formFields = updatedFormFields;
       }

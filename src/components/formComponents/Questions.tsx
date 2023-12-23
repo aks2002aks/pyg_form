@@ -38,9 +38,6 @@ const CreateForm = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(formFields);
-  }, [formFields]);
 
   const handleSaveEdit = async () => {
     setLoading(true);

@@ -94,9 +94,6 @@ const FileUpload: React.FC<Props> = ({ index }) => {
     setMaxFileSize(parseInt(e.target.value));
   };
 
-  useEffect(() => {
-    console.log(allowedFileTypes);
-  }, [allowedFileTypes]);
 
   useEffect(() => {
     const handleSubmit = () => {

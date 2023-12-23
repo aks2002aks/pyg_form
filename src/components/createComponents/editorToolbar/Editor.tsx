@@ -140,7 +140,6 @@ export default function Editor({
           onBlur={() => {
             const content = editor.getHTML();
             handleInputChange(content);
-            console.log(content);
           }}
         />
         {isEditorFocus && (

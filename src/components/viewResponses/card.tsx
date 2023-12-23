@@ -10,7 +10,6 @@ const Card = ({ responseId }: { responseId: string }) => {
   useEffect(() => {
     const fecthData = async () => {
       setLoading(true);
-      console.log("responseId", responseId);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/getResponseByResponseId`,
         {
@@ -25,7 +24,6 @@ const Card = ({ responseId }: { responseId: string }) => {
       );
       const resp = await res.json();
       setSingleResponse(resp.response);
-      console.log(resp.response);
 
       setTimeout(() => {
         setLoading(false);

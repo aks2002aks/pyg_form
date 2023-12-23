@@ -71,8 +71,7 @@ const LoginPage = () => {
     setLoading(true);
     const callbackUrl = !(param.get("callbackUrl") as string)
       ? "/forms"
-      : decodeURI(param.get("callbackUrl") as string);
-    console.log(callbackUrl);
+      : decodeURI(param.get("callbackUrl") as string);;
     const formIsValid = validateForm();
 
     if (formIsValid) {

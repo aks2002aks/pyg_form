@@ -24,7 +24,6 @@ const DropDown: React.FC<Props> = ({ options, required, fieldId }) => {
 
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
-    console.log("Selected value:", newValue);
     setSelectedValue(newValue);
     // You can dispatch an action or perform any other logic with the selected value here
   };

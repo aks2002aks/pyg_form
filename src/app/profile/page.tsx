@@ -92,7 +92,6 @@ const Page = () => {
     const fileKey = `${session?.user.id}`;
 
     if (file) {
-      console.log(file.type);
       const imageType = file.type.split("/")[0];
       if (imageType !== "image") {
         toast.error("Please select image only");

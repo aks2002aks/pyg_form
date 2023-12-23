@@ -110,7 +110,6 @@ const Genric_Question_Creation: React.FC<Props> = ({
     const fileKey = `${formId}/${randomUUID()}`;
 
     if (file) {
-      console.log(file.type);
       const imageType = file.type.split("/")[0];
       if (imageType !== "image") {
         toast.error("Please select image only");

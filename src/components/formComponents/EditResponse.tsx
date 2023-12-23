@@ -64,9 +64,6 @@ const EditResponse = () => {
     dispatch(saveFormId(formid as string));
   }, [dispatch, formid]);
 
-  useEffect(() => {
-    console.log("selectedFiles", selectedFiles);
-  }, [selectedFiles]);
 
   const isValidationRequired = (fieldId: string) => {
     const field = formFields.find((field) => field.id === fieldId);

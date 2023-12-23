@@ -52,8 +52,6 @@ const Responses = () => {
       );
       setAllVerifiedResponses(verifiedResponses);
       setAllUnVerifiedResponses(unverifiedResponses);
-      console.log("verifiedResponses", verifiedResponses);
-      console.log("unverifiedResponses", unverifiedResponses);
     };
     getAllResponses();
   }, [formId]);
