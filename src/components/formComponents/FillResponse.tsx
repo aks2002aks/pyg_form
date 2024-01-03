@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import GenricFormResponse from "../responseComponents/all_types_components/genric_form_response";
 import {
   saveFormId,
+  saveFormName,
   setFileUrlKey,
 } from "@/redux/features/responseField/responseFieldSlice";
 import { v4 as randomUUID } from "uuid";
@@ -51,6 +52,8 @@ const FillResponse = () => {
     (state: RootState) => state.formField.acceptingResponses
   ) as boolean;
 
+  const formName = useSelector((state: RootState) => state.formField.formName);
+
   const acceptingResponseTill = useSelector(
     (state: RootState) => state.formField.acceptingResponsesTill
   ) as string;
@@ -61,8 +64,8 @@ const FillResponse = () => {
 
   useEffect(() => {
     dispatch(saveFormId(formid as string));
-  }, [dispatch, formid]);
-
+    dispatch(saveFormName(formName));
+  }, [dispatch, formName, formid]);
 
   const isValidationRequired = (fieldId: string) => {
     const field = formFields.find((field) => field.id === fieldId);

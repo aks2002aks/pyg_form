@@ -48,7 +48,11 @@ const Page = () => {
   };
 
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const getAllForms = async () => {
+      setLoading(true);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/getAllForms`,
         {
@@ -59,6 +63,7 @@ const Page = () => {
           body: JSON.stringify({
             userId: session?.user.id,
           }),
+          signal,
         }
       );
 
@@ -76,8 +81,13 @@ const Page = () => {
       );
 
       setForms(sortedForms);
+      setLoading(false);
     };
     getAllForms();
+
+    return () => {
+      controller.abort();
+    };
   }, [session?.user.id]);
 
   const handleCreateForm = async () => {
@@ -179,7 +189,7 @@ const Page = () => {
                   <div
                     className=" relative "
                     key={form._id}
-                    style={{ maxWidth: "280px" }}
+                    style={{ width: "280px" }}
                   >
                     <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden  hover:border-red-500">
                       <Link href={`/edit?formid=${form._id}&view="Questions"`}>

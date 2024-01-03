@@ -67,6 +67,9 @@ const EditFormPage = () => {
 
   //make a api to fetch the formfields of the formid
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const fetchFormFields = async () => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/getFormById`,
@@ -78,17 +81,19 @@ const EditFormPage = () => {
           body: JSON.stringify({
             formId: formId,
           }),
+          signal,
         }
       );
-
       const { success, form } = await res.json();
-
       if (success) {
         dispatch(setAllFormFields(form));
       }
     };
 
     fetchFormFields();
+    return () => {
+      controller.abort();
+    };
   }, [dispatch, formId, session?.user?.id]);
 
   const handleFormNameBlur = async () => {

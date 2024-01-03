@@ -14,6 +14,7 @@ interface responses {
   email?: string;
   _id: string;
   submittedAt: string;
+  fromName: string;
 }
 
 const Page = () => {
@@ -59,6 +60,9 @@ const Page = () => {
                   (response: responses, index: number) => {
                     return (
                       <div key={index}>
+                        <div className="py-3">
+                          Form Name : {response.fromName}
+                        </div>
                         <div className="flex flex-col bg-gray-50 rounded-md p-2 shadow-lg">
                           <div className="flex flex-col justify-center sm:flex-row  w-full sm:justify-between items-center bg-gray-100 rounded-md p-2 hover:bg-gray-200 cursor-pointer  ">
                             <div className="pr-2">
@@ -85,7 +89,6 @@ const Page = () => {
                                 {response.email}
                               </div>
                             </div>
-
                             <div
                               className="p-2 hover:bg-gray-300 rounded-full cursor-pointer"
                               onClick={() => handleDropClick(index)}
@@ -109,7 +112,7 @@ const Page = () => {
               </>
             ) : (
               <>
-              <div className="text-center">No response available.</div>
+                <div className="text-center">No response available.</div>
               </>
             )}
           </div>

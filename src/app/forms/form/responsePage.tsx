@@ -145,11 +145,11 @@ const ResponsePage = () => {
       ) {
         // if form accepting
         if (formSettings.response.collectEmailAddresses === "Verified") {
-          if (session?.user?.isEmailVerified) {
-            if (
-              session?.user?.role &&
-              accessByRole.includes(session.user.role as string)
-            ) {
+          if (
+            session?.user?.role &&
+            accessByRole.includes(session.user.role as string)
+          ) {
+            if (session?.user?.isEmailVerified) {
               if (formSettings?.response.limitToOneResponsePerPerson) {
                 // check if user already submitted the response or not
                 if (userResponded) {
@@ -193,32 +193,6 @@ const ResponsePage = () => {
             } else {
               return (
                 <SubmitResponse>
-                  <div className="p-7 w-full rounded-lg space-y-4">
-                    <h1 style={{ fontSize: "35px" }}>{formName}</h1>
-                    <p>
-                      The Access to form{" "}
-                      <span className="font-semibold">{formName}</span> is
-                      restricted to verified users only with specfic role. Login
-                      with a Accesible Account to access the form.{" "}
-                      <Link
-                        href={"/user/login"}
-                        className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
-                      >
-                        Login
-                      </Link>
-                    </p>
-
-                    <p>
-                      Try contacting the owner of the form if you think that
-                      this is a mistake.
-                    </p>
-                  </div>
-                </SubmitResponse>
-              );
-            }
-          } else {
-            return (
-              <SubmitResponse>
                 <div className="p-7 w-full rounded-lg space-y-4">
                   <h1 style={{ fontSize: "35px" }}>{formName}</h1>
                   <p>
@@ -240,6 +214,33 @@ const ResponsePage = () => {
                   </p>
                 </div>
               </SubmitResponse>
+               
+              );
+            }
+          } else {
+            return (
+              <SubmitResponse>
+              <div className="p-7 w-full rounded-lg space-y-4">
+                <h1 style={{ fontSize: "35px" }}>{formName}</h1>
+                <p>
+                  The Access to form{" "}
+                  <span className="font-semibold">{formName}</span> is
+                  restricted to verified users only with specfic role. Login
+                  with a Accesible Account to access the form.{" "}
+                  <Link
+                    href={"/user/login"}
+                    className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
+                  >
+                    Login
+                  </Link>
+                </p>
+
+                <p>
+                  Try contacting the owner of the form if you think that
+                  this is a mistake.
+                </p>
+              </div>
+            </SubmitResponse>
             );
           }
         } else {

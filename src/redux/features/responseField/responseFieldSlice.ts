@@ -21,6 +21,7 @@ interface FormResponse {
   userId?: string;
   formId?: string;
   userName?: string;
+  formName?: string;
   email?: string;
   formResponses: FormFieldResponse[];
   submittedAt?: Date;
@@ -40,6 +41,9 @@ export const responseFieldSlice = createSlice({
     },
     saveUserId: (state, action: PayloadAction<string>) => {
       state.userId = action.payload;
+    },
+    saveFormName: (state, action: PayloadAction<string>) => {
+      state.formName = action.payload;
     },
     saveFormId: (state, action: PayloadAction<string>) => {
       state.formId = action.payload;
@@ -242,12 +246,20 @@ export const responseFieldSlice = createSlice({
     },
 
     setFormResponses: (state, action: PayloadAction<FormResponse>) => {
-      const { formId, userName, email, formResponses, submittedAt, updatedAt } =
-        action.payload;
+      const {
+        formId,
+        userName,
+        email,
+        formResponses,
+        submittedAt,
+        updatedAt,
+        formName,
+      } = action.payload;
       return {
         ...state,
         formId,
         userName,
+        formName,
         email,
         formResponses,
         submittedAt,
@@ -270,6 +282,7 @@ export const {
   rangeFromFormField,
   rangeToFormField,
   setFormResponses,
+  saveFormName
 } = responseFieldSlice.actions;
 
 export default responseFieldSlice.reducer;
