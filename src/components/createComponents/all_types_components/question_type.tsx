@@ -36,10 +36,6 @@ const Question_type: React.FC<Props> = ({
     dispatch(handleTypeChange({ index, newType: value }));
   };
 
-  const variants = {
-    open: { opacity: 1, y: 0 },
-    closed: { opacity: 0, y: -10 },
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

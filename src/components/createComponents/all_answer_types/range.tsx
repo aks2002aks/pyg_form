@@ -53,7 +53,7 @@ const Range: React.FC<RangeSliderProps> = ({
   return (
     <div className="flex flex-col  space-y-8 ">
       {focus && (
-        <div className="flex space-x-2">
+        <div className="flex xs:space-x-2 flex-wrap justify-center space-y-4 space-x-0 xs:space-y-0">
           <div className="flex flex-col items-center ">
             <span className="pb-2">Min Value</span>
             <input
