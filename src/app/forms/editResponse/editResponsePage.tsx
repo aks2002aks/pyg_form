@@ -39,8 +39,6 @@ const ResponsePage = () => {
   const dispatch = useDispatch();
   const formId = useSearchParams().get("formid");
   const responseId = useSearchParams().get("responseid");
-  const isPublic = useSelector((state: RootState) => state.formField.isPublic);
-  const formUserId = useSelector((state: RootState) => state.formField.userId);
   const formSettings = useSelector(
     (state: RootState) => state.formField.formSettings
   );
@@ -58,6 +56,7 @@ const ResponsePage = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             formId: formId,
@@ -76,6 +75,7 @@ const ResponsePage = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.user.accessToken}`,
             },
             body: JSON.stringify({
               responseId: responseId,
@@ -117,7 +117,7 @@ const ResponsePage = () => {
     };
 
     fetchFormFields();
-  }, [dispatch, formId, responseId, session?.user.firstName, session?.user.id]);
+  }, [dispatch, formId, responseId, session?.user.accessToken, session?.user.firstName, session?.user.id]);
 
   const acceptingResponse = useSelector(
     (state: RootState) => state.formField.acceptingResponses

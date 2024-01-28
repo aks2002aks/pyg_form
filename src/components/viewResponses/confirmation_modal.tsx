@@ -22,6 +22,7 @@ const ConfirmationModal: React.FC<Props> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             formId: formId,

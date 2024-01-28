@@ -82,6 +82,7 @@ const authOptions: NextAuthOptions = {
         token.profileImageUrl = user.profileImageUrl;
         token.updatedAt = user.updatedAt;
         token.createdAt = user.createdAt;
+        token.accessToken = user.accessToken;
       }
       return token;
     },
@@ -107,6 +108,7 @@ const authOptions: NextAuthOptions = {
         session.user.profileImageUrl = token.profileImageUrl;
         session.user.updatedAt = token.updatedAt;
         session.user.createdAt = token.createdAt;
+        session.user.accessToken = token.accessToken;
       }
       return session;
     },

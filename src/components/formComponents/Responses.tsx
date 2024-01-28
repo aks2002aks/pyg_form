@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import VerifiedResponseViewer from "../viewResponses/verifiedResponseViewer";
 import UnverifiedResponseViewer from "../viewResponses/unverifiedResponseViewer";
 import SearchResposne from "../viewResponses/searchResponse";
+import { useSession } from "next-auth/react";
 
 interface responses {
   formId: string;
@@ -15,6 +16,7 @@ interface responses {
 }
 
 const Responses = () => {
+  const { data: session } = useSession();
   const [loadingSkeleton, setLoadingSkeleton] = useState(false);
   const [loading, setLoading] = useState(false);
   const formId = useSearchParams().get("formid");
@@ -35,6 +37,7 @@ const Responses = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             formId: formId,
@@ -54,7 +57,7 @@ const Responses = () => {
       setAllUnVerifiedResponses(unverifiedResponses);
     };
     getAllResponses();
-  }, [formId]);
+  }, [formId, session?.user.accessToken]);
 
   const handleTabChange = (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);

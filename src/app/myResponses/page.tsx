@@ -38,6 +38,7 @@ const Page = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             Email: session?.user?.email,
@@ -48,7 +49,7 @@ const Page = () => {
       setAllVerifiedResponses(resp.response);
     };
     getAllResponses();
-  }, [session?.user?.email]);
+  }, [session?.user.accessToken, session?.user?.email]);
   return (
     <div className="rounded w-full ">
       <div className="bg-gray-100 flex flex-col space-y-4 justify-center items-center p-4 md:pl-12 md:pr-12 pt-4 pb-5">

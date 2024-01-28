@@ -58,6 +58,7 @@ const ResponsePage = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             formId: formId,
@@ -98,7 +99,7 @@ const ResponsePage = () => {
     };
 
     fetchFormFields();
-  }, [dispatch, formId, session?.user.firstName, session?.user?.id]);
+  }, [dispatch, formId, session?.user.accessToken, session?.user.firstName, session?.user.id]);
 
   const acceptingResponse = useSelector(
     (state: RootState) => state.formField.acceptingResponses
@@ -117,6 +118,7 @@ const ResponsePage = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             userId: session?.user.id,
@@ -129,7 +131,7 @@ const ResponsePage = () => {
     };
 
     checkIfResponsePresent();
-  }, [session?.user.id]);
+  }, [session?.user.accessToken, session?.user.id]);
 
   if (formId) {
     if (

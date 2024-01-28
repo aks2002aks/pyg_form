@@ -10,6 +10,7 @@ import {
   handleAcceptingResponsesTillChange,
 } from "@/redux/features/formField/formFieldSlice";
 import ConfirmationModal from "./confirmation_modal";
+import { useSession } from "next-auth/react";
 
 const ViewResponseHeader = ({
   TotalResponses,
@@ -20,6 +21,7 @@ const ViewResponseHeader = ({
   activeTab: string;
   handleTabChange: (arg0: string) => void;
 }) => {
+  const { data: session } = useSession();
   const dispatch = useDispatch();
   const acceptingResponse = useSelector(
     (state: RootState) => state.formField.acceptingResponses
@@ -62,6 +64,7 @@ const ViewResponseHeader = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           formId: formId,
@@ -101,6 +104,7 @@ const ViewResponseHeader = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             formId: formId,
@@ -129,6 +133,7 @@ const ViewResponseHeader = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           formId: formId,
@@ -140,6 +145,7 @@ const ViewResponseHeader = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.user.accessToken}`,
       },
       body: JSON.stringify({
         formId: formId,
@@ -165,6 +171,7 @@ const ViewResponseHeader = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           formId: formId,

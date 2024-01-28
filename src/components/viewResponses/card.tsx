@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import CardSkeleton from "./cardSkeleton";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import Link from "next/link";
+import {useSession} from "next-auth/react";
 
 const Card = ({ responseId }: { responseId: string }) => {
+  const {data:session}= useSession();
   const [singleResponse, setSingleResponse] = useState<any>({});
   const [loading, setLoading] = useState(false);
 
@@ -16,6 +18,7 @@ const Card = ({ responseId }: { responseId: string }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             responseId: responseId,
@@ -30,7 +33,7 @@ const Card = ({ responseId }: { responseId: string }) => {
       }, 1000);
     };
     fecthData();
-  }, [responseId]);
+  }, [responseId, session?.user.accessToken]);
 
   return (
     <div className="p-5 pr-0">

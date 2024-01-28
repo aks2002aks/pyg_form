@@ -40,6 +40,7 @@ export default function ShareModal({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.user.accessToken}`,
       },
       body: JSON.stringify({
         formId: postId,

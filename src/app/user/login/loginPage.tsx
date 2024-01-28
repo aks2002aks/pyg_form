@@ -69,10 +69,14 @@ const LoginPage = () => {
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    const callbackUrl = !(param.get("callbackUrl") as string)
+    let callbackUrl = !(param.get("callbackUrl") as string)
       ? "/forms"
       : decodeURI(param.get("callbackUrl") as string);;
     const formIsValid = validateForm();
+
+    if(callbackUrl.includes("resetPassword") && !formIsValid){
+      callbackUrl = "/"
+    }
 
     if (formIsValid) {
       try {

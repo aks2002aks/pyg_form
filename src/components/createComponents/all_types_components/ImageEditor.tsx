@@ -30,6 +30,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({
   imageSetting,
   field,
 }) => {
+  const {data:session}= useSession();
   const dispatch = useDispatch();
   const [width, setWidth] = useState(imageSetting.width);
   const [height, setHeight] = useState(imageSetting.height);
@@ -82,6 +83,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user.accessToken}`,
               },
               body: JSON.stringify({
                 formId: formId,

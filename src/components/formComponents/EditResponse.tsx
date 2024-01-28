@@ -324,6 +324,7 @@ const EditResponse = () => {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user.accessToken}`,
               },
               body: JSON.stringify({
                 responseId: responseid,

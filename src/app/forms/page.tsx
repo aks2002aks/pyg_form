@@ -59,6 +59,7 @@ const Page = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             userId: session?.user.id,
@@ -88,7 +89,7 @@ const Page = () => {
     return () => {
       controller.abort();
     };
-  }, [session?.user.id]);
+  }, [session?.user.accessToken, session?.user.id]);
 
   const handleCreateForm = async () => {
     setLoading(true);
@@ -98,6 +99,7 @@ const Page = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           userId: session?.user.id,

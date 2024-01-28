@@ -4,8 +4,10 @@ import { GoClock } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdOutlineContactPage } from "react-icons/md";
 import Card from "./card";
+import { useSession } from "next-auth/react";
 
 const SearchResponse = () => {
+  const { data: session } = useSession();
   const [searchText, setSearchText] = useState("");
   const [searchType, setSearchType] = useState("");
   const [allResponses, setAllResponses] = useState([]);
@@ -18,7 +20,6 @@ const SearchResponse = () => {
   };
 
   const handleSearch = async () => {
-
     if (searchType === "email") {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/getAllResponsesByEmailId`,
@@ -26,6 +27,7 @@ const SearchResponse = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             Email: searchText,

@@ -8,5 +8,6 @@ export const config = {
     "/edit/:path*",
     "/profile",
     "/myResponses",
+    "/user/resetPassword"
   ],
 };

@@ -35,6 +35,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { RootState } from "@/redux/store/store";
 import Range from "@/components/createComponents/all_answer_types/range";
+import { useSession } from "next-auth/react";
 
 interface FormField {
   type: string;
@@ -75,6 +76,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
   handleDragEnd,
   handleSaveEdit,
 }) => {
+  const {data:session} = useSession();
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(field.type);
   const [isOpen, setIsOpen] = useState(false);
@@ -134,6 +136,7 @@ const Genric_Question_Creation: React.FC<Props> = ({
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
+                  Authorization: `Bearer ${session?.user.accessToken}`,
                 },
                 body: JSON.stringify({
                   formId: formId,

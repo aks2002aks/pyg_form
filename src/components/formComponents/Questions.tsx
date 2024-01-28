@@ -16,7 +16,6 @@ import {
 import { handleDropField } from "@/redux/features/formField/formFieldSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import ShareModal from "../modal/shareModal";
 import toast from "react-hot-toast";
 
 const CreateForm = () => {
@@ -28,7 +27,6 @@ const CreateForm = () => {
   const [isBrowser, setIsBrowser] = useState(false);
 
   const formid = useSearchParams().get("formid");
-  const router = useRouter();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
@@ -49,6 +47,7 @@ const CreateForm = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             userId: session?.user?.id,

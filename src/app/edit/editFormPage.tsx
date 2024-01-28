@@ -77,6 +77,7 @@ const EditFormPage = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             formId: formId,
@@ -94,7 +95,7 @@ const EditFormPage = () => {
     return () => {
       controller.abort();
     };
-  }, [dispatch, formId, session?.user?.id]);
+  }, [dispatch, formId, session?.user.accessToken, session?.user.id]);
 
   const handleFormNameBlur = async () => {
     try {
@@ -104,6 +105,7 @@ const EditFormPage = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             userId: session?.user?.id,

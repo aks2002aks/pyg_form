@@ -105,6 +105,7 @@ const VerifyPhoneOrEmail: React.FC<VerifyPhoneOrEmailProps> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           email: session?.user?.email,
@@ -132,6 +133,7 @@ const VerifyPhoneOrEmail: React.FC<VerifyPhoneOrEmailProps> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           email: session?.user?.email,

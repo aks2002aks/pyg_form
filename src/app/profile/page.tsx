@@ -37,6 +37,7 @@ const Page = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           email: session?.user?.email,
@@ -64,6 +65,7 @@ const Page = () => {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user.accessToken}`,
               },
               body: JSON.stringify({
                 userId: session?.user.id,
@@ -116,6 +118,7 @@ const Page = () => {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
+                  Authorization: `Bearer ${session?.user.accessToken}`,
                 },
                 body: JSON.stringify({
                   userId: session?.user.id,

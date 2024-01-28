@@ -104,6 +104,7 @@ const Page = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.user.accessToken}`,
             },
             body: JSON.stringify({
               email: session?.user?.email,
@@ -170,7 +171,7 @@ const Page = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                 onClick={toggleCurrentPasswordVisibility}
               >
-                {showNewPassword ? (
+                {showCurrentPassword ? (
                   <FaEyeSlash className="text-gray-500" />
                 ) : (
                   <FaEye className="text-gray-500" />

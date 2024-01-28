@@ -17,6 +17,7 @@ declare module "next-auth" {
       isPhoneVerified: boolean;
       profileImageUrl: string;
       role: string;
+      accessToken:string;
     };
   }
 }

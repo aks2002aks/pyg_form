@@ -38,6 +38,7 @@ const ConfirmationModal: React.FC<Props> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify({
             formId: selectedForm?._id,
@@ -53,6 +54,7 @@ const ConfirmationModal: React.FC<Props> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
         body: JSON.stringify({
           userId: session?.user.id,
@@ -61,7 +63,6 @@ const ConfirmationModal: React.FC<Props> = ({
       });
 
       toast.success("Form deleted successfully");
-
       setForms(forms.filter((form) => form._id !== selectedForm?._id));
       setDeleteConfirmation(false);
     } catch (error) {
