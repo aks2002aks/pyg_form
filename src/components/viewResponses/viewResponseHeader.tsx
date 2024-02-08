@@ -32,14 +32,21 @@ const ViewResponseHeader = ({
   const formId = useSelector((state: RootState) => state.formField._id);
   const [showDropDown, setShowDropDown] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-  const [showDateAndTime, setShowDateAndTime] = useState(
-    acceptingResponseTill !== "" ? true : false
-  );
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [date, setDate] = useState(acceptingResponseTill?.split("T")[0] ?? "");
   const [time, setTime] = useState(
     acceptingResponseTill?.split("T")[1]?.slice(0, -1) ?? ""
   );
+
+  function isEmpty(str: string | undefined | null): boolean {
+    return !str || str.length === 0 || str === undefined || str === null;
+  }
+
+  const [showDateAndTime, setShowDateAndTime] = useState(
+    !isEmpty(acceptingResponseTill) ? true : false
+  );
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (

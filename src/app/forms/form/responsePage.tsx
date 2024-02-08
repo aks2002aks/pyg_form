@@ -99,7 +99,13 @@ const ResponsePage = () => {
     };
 
     fetchFormFields();
-  }, [dispatch, formId, session?.user.accessToken, session?.user.firstName, session?.user.id]);
+  }, [
+    dispatch,
+    formId,
+    session?.user.accessToken,
+    session?.user.firstName,
+    session?.user.id,
+  ]);
 
   const acceptingResponse = useSelector(
     (state: RootState) => state.formField.acceptingResponses
@@ -133,6 +139,10 @@ const ResponsePage = () => {
     checkIfResponsePresent();
   }, [session?.user.accessToken, session?.user.id]);
 
+  function isEmpty(str: string | undefined | null): boolean {
+    return !str || str.length === 0 || str === undefined || str === null;
+  }
+
   if (formId) {
     if (
       isPublic ||
@@ -141,7 +151,7 @@ const ResponsePage = () => {
     ) {
       if (
         acceptingResponse &&
-        (acceptingResponseTill !== ""
+        (!isEmpty(acceptingResponseTill)
           ? new Date(acceptingResponseTill) > new Date()
           : true)
       ) {
@@ -195,18 +205,44 @@ const ResponsePage = () => {
             } else {
               return (
                 <SubmitResponse>
+                  <div className="p-7 w-full rounded-lg space-y-4">
+                    <h1 style={{ fontSize: "35px" }}>{formName}</h1>
+                    <p>
+                      The Access to form{" "}
+                      <span className="font-semibold">{formName}</span> is
+                      restricted to verified users only. Go to your profile and
+                      verify your email address.{" "}
+                      <Link
+                        href={"/profile"}
+                        className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
+                      >
+                        profile
+                      </Link>
+                    </p>
+
+                    <p>
+                      Try contacting the owner of the form if you think that
+                      this is a mistake.
+                    </p>
+                  </div>
+                </SubmitResponse>
+              );
+            }
+          } else {
+            return (
+              <SubmitResponse>
                 <div className="p-7 w-full rounded-lg space-y-4">
                   <h1 style={{ fontSize: "35px" }}>{formName}</h1>
                   <p>
                     The Access to form{" "}
                     <span className="font-semibold">{formName}</span> is
-                    restricted to verified users only. Go to your profile and
-                    verify your email address.{" "}
+                    restricted to verified users only with specfic role. Login
+                    with a Accesible Account to access the form.{" "}
                     <Link
-                      href={"/profile"}
+                      href={"/user/login"}
                       className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
                     >
-                      profile
+                      Login
                     </Link>
                   </p>
 
@@ -216,33 +252,6 @@ const ResponsePage = () => {
                   </p>
                 </div>
               </SubmitResponse>
-               
-              );
-            }
-          } else {
-            return (
-              <SubmitResponse>
-              <div className="p-7 w-full rounded-lg space-y-4">
-                <h1 style={{ fontSize: "35px" }}>{formName}</h1>
-                <p>
-                  The Access to form{" "}
-                  <span className="font-semibold">{formName}</span> is
-                  restricted to verified users only with specfic role. Login
-                  with a Accesible Account to access the form.{" "}
-                  <Link
-                    href={"/user/login"}
-                    className="text-sm text-blue-500 hover:text-blue-700 border-b border-blue-500 hover:border-blue-700"
-                  >
-                    Login
-                  </Link>
-                </p>
-
-                <p>
-                  Try contacting the owner of the form if you think that
-                  this is a mistake.
-                </p>
-              </div>
-            </SubmitResponse>
             );
           }
         } else {

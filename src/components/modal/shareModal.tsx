@@ -32,6 +32,7 @@ export default function ShareModal({
   postId: string;
 }) {
   const isPublic = useSelector((state: RootState) => state.formField.isPublic);
+  console.log(isPublic);
   const dispatch = useDispatch();
   const { data: session } = useSession();
 
@@ -55,12 +56,15 @@ export default function ShareModal({
     );
   };
 
+  const el = document.getElementById("root");
+
   return (
     <div>
       {openShare && (
         <Modal
           isOpen={openShare}
           onRequestClose={() => setOpenShare(false)}
+          appElement={el as HTMLElement}
           className="max-w-sm w-[70%]  absolute top-24 left-[50%] translate-x-[-50%] bg-white border-2 border-gray-200 rounded-xl shadow-md "
         >
           <div className="p-1">
