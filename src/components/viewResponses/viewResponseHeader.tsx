@@ -129,7 +129,7 @@ const ViewResponseHeader = ({
       }
     };
     handleAcceptingResponseTill();
-  }, [date, dispatch, formId, time]);
+  }, [date, dispatch, formId, session?.user.accessToken, time]);
 
   const handleClearSelection = async () => {
     setDate("");
